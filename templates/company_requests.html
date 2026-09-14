@@ -1,0 +1,643 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ company }} - Material Requests
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-header">
+
+
+<div>
+
+    <div class="breadcrumb">
+        COMPANY / {{ company }}
+    </div>
+
+    <h1>
+        {{ company }}
+    </h1>
+
+    <p>
+        All material requests for {{ company }}.
+    </p>
+
+</div>
+
+
+</div>
+
+<div class="panel">
+
+<!-- ==========================================
+     PANEL HEADER
+=========================================== -->
+
+<div class="panel-header">
+
+    <div>
+
+        <h2>
+            {{ company }} Material Requests
+        </h2>
+
+        <p>
+            Showing all requests submitted by {{ company }}.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- ==========================================
+     SEARCH / FILTER / EXPORT
+=========================================== -->
+
+<div
+    class="company-filter-bar"
+    style="
+        padding: 15px 20px;
+        border-bottom: 1px solid #e5e7eb;
+    "
+>
+
+    <form
+        method="GET"
+        action="{{ url_for(
+            'company_requests',
+            company=company
+        ) }}"
+        style="
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            align-items: center;
+            flex-wrap: wrap;
+        "
+    >
+
+        <!-- SEARCH -->
+
+        <input
+            type="text"
+            name="search"
+            value="{{ search }}"
+            placeholder="Search MRI No. or Requested By..."
+            class="search-input"
+        >
+
+
+        <!-- MATERIAL STATUS -->
+
+        <select
+            name="status"
+            class="status-filter"
+        >
+
+            <option value="">
+                All Material Status
+            </option>
+
+            <option
+                value="Pending"
+                {% if status == "Pending" %}selected{% endif %}
+            >
+                Pending
+            </option>
+
+            <option
+                value="Approved"
+                {% if status == "Approved" %}selected{% endif %}
+            >
+                Approved
+            </option>
+
+            <option
+                value="Rejected"
+                {% if status == "Rejected" %}selected{% endif %}
+            >
+                Rejected
+            </option>
+
+            <option
+                value="Ordered"
+                {% if status == "Ordered" %}selected{% endif %}
+            >
+                Ordered
+            </option>
+
+            <option
+                value="In Transit"
+                {% if status == "In Transit" %}selected{% endif %}
+            >
+                In Transit
+            </option>
+
+            <option
+                value="Received"
+                {% if status == "Received" %}selected{% endif %}
+            >
+                Received
+            </option>
+
+        </select>
+
+
+        <!-- FILTER -->
+
+        <button
+            type="submit"
+            class="filter-button"
+        >
+            Filter
+        </button>
+
+
+        <!-- CLEAR -->
+
+        <a
+            href="{{ url_for(
+                'company_requests',
+                company=company
+            ) }}"
+            class="filter-button"
+            style="
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            "
+        >
+            Clear
+        </a>
+
+
+        <!-- EXPORT EXCEL -->
+
+        <a
+            href="{{ url_for(
+                'export_company_excel',
+                company=company,
+                search=search,
+                status=status
+            ) }}"
+            class="filter-button"
+            style="
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            "
+        >
+            📊 Export Excel
+        </a>
+
+    </form>
+
+</div>
+
+
+<!-- ==========================================
+     TABLE
+=========================================== -->
+
+<div class="table-wrapper">
+
+    <table class="modern-table">
+
+        <thead>
+
+            <tr>
+
+                <th>
+                    MRI NO.
+                </th>
+
+                <th>
+                    COMPANY
+                </th>
+
+                <th>
+                    REQUESTED BY
+                </th>
+
+                <th>
+                    REQUEST DATE
+                </th>
+
+                <th>
+                    LTSC
+                </th>
+
+                <th>
+                    PIPING
+                </th>
+
+                <th>
+                    MATERIAL STATUS
+                </th>
+
+                <th>
+                    ACTION
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            {% for item in requests %}
+
+            <tr>
+
+                <!-- ==================================
+                     MRI
+                =================================== -->
+
+                <td>
+
+                    <a
+                        href="{{ url_for(
+                            'view_material_request',
+                            id=item.id
+                        ) }}"
+                        class="mri-number"
+                    >
+                        {{ item.mri_no }}
+                    </a>
+
+                </td>
+
+
+                <!-- ==================================
+                     COMPANY
+                =================================== -->
+
+                <td>
+
+                    <div class="company-cell">
+
+                        <div class="company-avatar">
+
+                            {{ item.company[0]|upper }}
+
+                        </div>
+
+                        {{ item.company }}
+
+                    </div>
+
+                </td>
+
+
+                <!-- ==================================
+                     REQUESTED BY
+                =================================== -->
+
+                <td>
+
+                    <div class="requester">
+
+                        <div class="mini-avatar">
+
+                            {{ item.requested_by[0]|upper }}
+
+                        </div>
+
+                        {{ item.requested_by }}
+
+                    </div>
+
+                </td>
+
+
+                <!-- ==================================
+                     REQUEST DATE
+                =================================== -->
+
+                <td>
+
+                    <span class="date-text">
+
+                        {{ item.req_date.strftime('%Y-%m-%d') }}
+
+                    </span>
+
+                </td>
+
+
+                <!-- ==================================
+                     LTSC
+                =================================== -->
+
+                <td>
+
+                    {% if item.ltsc_status == "Submitted" %}
+
+                        <span class="status-badge status-submitted">
+
+                            <span class="status-dot"></span>
+
+                            Submitted
+
+                        </span>
+
+                    {% elif item.ltsc_status == "Cancelled" %}
+
+                        <span class="status-badge status-rejected">
+
+                            <span class="status-dot"></span>
+
+                            Cancelled
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="status-badge status-pending">
+
+                            <span class="status-dot"></span>
+
+                            {{ item.ltsc_status }}
+
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+
+                <!-- ==================================
+                     PIPING
+                =================================== -->
+
+                <td>
+
+                    {% if item.piping_status == "Approved" %}
+
+                        <span class="status-badge status-approved">
+
+                            <span class="status-dot"></span>
+
+                            Approved
+
+                        </span>
+
+                    {% elif item.piping_status == "Rejected" %}
+
+                        <span class="status-badge status-rejected">
+
+                            <span class="status-dot"></span>
+
+                            Rejected
+
+                        </span>
+
+                    {% elif item.piping_status == "In Progress" %}
+
+                        <span class="status-badge status-in-progress">
+
+                            <span class="status-dot"></span>
+
+                            In Progress
+
+                        </span>
+
+                    {% elif item.piping_status == "Completed" %}
+
+                        <span class="status-badge status-completed">
+
+                            <span class="status-dot"></span>
+
+                            Completed
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="status-badge status-pending">
+
+                            <span class="status-dot"></span>
+
+                            {{ item.piping_status }}
+
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+
+                <!-- ==================================
+                     MATERIAL STATUS
+                =================================== -->
+
+                <td>
+
+                    {% if item.material_status == "Approved" %}
+
+                        <span class="status-badge status-approved">
+
+                            <span class="status-dot"></span>
+
+                            Approved
+
+                        </span>
+
+                    {% elif item.material_status == "Rejected" %}
+
+                        <span class="status-badge status-rejected">
+
+                            <span class="status-dot"></span>
+
+                            Rejected
+
+                        </span>
+
+                    {% elif item.material_status == "Ordered" %}
+
+                        <span class="status-badge status-ordered">
+
+                            <span class="status-dot"></span>
+
+                            Ordered
+
+                        </span>
+
+                    {% elif item.material_status == "In Transit" %}
+
+                        <span class="status-badge status-in-transit">
+
+                            <span class="status-dot"></span>
+
+                            In Transit
+
+                        </span>
+
+                    {% elif item.material_status == "Received" %}
+
+                        <span class="status-badge status-completed">
+
+                            <span class="status-dot"></span>
+
+                            Received
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="status-badge status-pending">
+
+                            <span class="status-dot"></span>
+
+                            {{ item.material_status }}
+
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+
+                <!-- ==================================
+                     ACTION
+                =================================== -->
+
+                <td>
+
+                    <div class="action-menu">
+
+                        <!-- VIEW -->
+
+                        <a
+                            href="{{ url_for(
+                                'view_material_request',
+                                id=item.id
+                            ) }}"
+                            class="icon-button"
+                            title="View"
+                        >
+                            👁
+                        </a>
+
+
+                        <!-- EDIT -->
+
+                        <a
+                            href="{{ url_for(
+                                'edit_material_request',
+                                id=item.id
+                            ) }}"
+                            class="icon-button"
+                            title="Edit"
+                        >
+                            ✎
+                        </a>
+
+
+                        <!-- DELETE -->
+
+                        {% if current_user.role == "ADMIN" %}
+
+                        <form
+                            method="POST"
+                            action="{{ url_for(
+                                'delete_material_request',
+                                id=item.id
+                            ) }}"
+                            style="display:inline;"
+                            onsubmit="return confirm(
+                                'Are you sure you want to delete this request?'
+                            );"
+                        >
+
+                            <button
+                                type="submit"
+                                class="delete-button"
+                                title="Delete"
+                            >
+                                🗑
+                            </button>
+
+                        </form>
+
+                        {% endif %}
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+
+            {% else %}
+
+            <!-- ==================================
+                 EMPTY
+            =================================== -->
+
+            <tr>
+
+                <td
+                    colspan="8"
+                    class="empty-state"
+                >
+
+                    <div class="empty-icon">
+                        📋
+                    </div>
+
+                    <h3>
+                        No Material Requests
+                    </h3>
+
+                    <p>
+
+                        {% if search or status %}
+
+                            No requests match your
+                            current filter.
+
+                        {% else %}
+
+                            There are currently no requests
+                            for {{ company }}.
+
+                        {% endif %}
+
+                    </p>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<!-- ==========================================
+     FOOTER
+=========================================== -->
+
+<div class="panel-footer">
+
+    Total {{ company }} Requests:
+
+    <strong>
+        {{ requests|length }}
+    </strong>
+
+</div>
+
+</div>
+
+{% endblock %}

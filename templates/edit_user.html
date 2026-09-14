@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit User
+{% endblock %}
+
+
+{% block content %}
+
+<div class="dashboard-header">
+
+    <div>
+
+        <div class="breadcrumb">
+            ADMIN / USERS / EDIT
+        </div>
+
+        <h1>
+            Edit User
+        </h1>
+
+        <p>
+            Update the user's account information.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="panel user-edit-panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <h2>
+                Edit Account
+            </h2>
+
+            <p>
+                Update username, full name and role.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <form
+        method="POST"
+        action="{{ url_for('edit_user', id=user.id) }}"
+        class="user-form"
+    >
+
+
+        <div class="form-group">
+
+            <label>
+                Username
+            </label>
+
+            <input
+                type="text"
+                name="username"
+                value="{{ user.username }}"
+                required
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Full Name
+            </label>
+
+            <input
+                type="text"
+                name="full_name"
+                value="{{ user.full_name }}"
+                required
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Role
+            </label>
+
+            <select
+                name="role"
+                required
+            >
+
+                {% for role in allowed_roles %}
+
+                    <option
+                        value="{{ role }}"
+                        {% if user.role == role %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ role.replace("_", " ") }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        
+<div class="form-actions user-form-actions">
+
+    <a
+        href="{{ url_for('users') }}"
+        class="user-action-btn user-action-cancel"
+    >
+        <span class="user-action-icon">←</span>
+        <span>Cancel</span>
+    </a>
+
+    <button
+        type="submit"
+        class="user-action-btn user-action-save"
+    >
+        <span class="user-action-icon">✓</span>
+        <span>Save Changes</span>
+    </button>
+
+</div>
+
+
+
+
+    </form>
+
+</div>
+
+{% endblock %}
+

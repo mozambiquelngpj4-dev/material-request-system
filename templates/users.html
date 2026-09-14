@@ -1,0 +1,475 @@
+```html
+{% extends "base.html" %}
+
+{% block title %}
+User Management
+{% endblock %}
+
+
+{% block content %}
+
+<div class="dashboard-header">
+
+    <div>
+
+        <div class="breadcrumb">
+            ADMIN / USERS
+        </div>
+
+        <h1>
+            User Management
+        </h1>
+
+        <p>
+            Create and manage system users.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="users-grid">
+
+
+    <!-- ==========================================
+         CREATE USER
+    =========================================== -->
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <h2>
+                    Create New User
+                </h2>
+
+                <p>
+                    Add a new user to the Material Request System.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form
+            method="POST"
+            action="{{ url_for('users') }}"
+            class="user-form"
+        >
+
+            <div class="form-group">
+
+                <label>
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    name="username"
+                    required
+                    autocomplete="off"
+                    placeholder="Enter username"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    name="full_name"
+                    required
+                    placeholder="Enter full name"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Role
+                </label>
+
+                <select
+                    name="role"
+                    required
+                >
+
+                    <option value="">
+                        Select Role
+                    </option>
+
+                    <option value="ADMIN">
+                        ADMIN
+                    </option>
+
+                    <option value="REQUESTER">
+                        REQUESTER
+                    </option>
+
+                    <option value="APPROVER_PIPING">
+                        APPROVER PIPING
+                    </option>
+
+                    <option value="APPROVER_MATERIAL">
+                        APPROVER MATERIAL
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    name="password"
+                    required
+                    autocomplete="new-password"
+                    placeholder="Enter password"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Confirm Password
+                </label>
+
+                <input
+                    type="password"
+                    name="confirm_password"
+                    required
+                    autocomplete="new-password"
+                    placeholder="Confirm password"
+                >
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <button
+                    type="submit"
+                    class="btn-primary"
+                >
+                    ＋ Create User
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- ==========================================
+         EXISTING USERS
+    =========================================== -->
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <h2>
+                    Existing Users
+                </h2>
+
+                <p>
+                    {{ users|length }} user(s) registered.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table class="modern-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>USERNAME</th>
+
+                        <th>FULL NAME</th>
+
+                        <th>ROLE</th>
+
+                        <th>STATUS</th>
+
+                        <th>CREATED</th>
+
+                        <th>ACTIONS</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for user in users %}
+
+                    <tr>
+
+                        <td>
+                            {{ user.id }}
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ user.username }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+                            {{ user.full_name }}
+                        </td>
+
+
+                        <td>
+
+                            <span class="role-badge">
+                                {{ user.role }}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            {% if user.is_active %}
+
+                                <span class="status-badge status-approved">
+
+                                    <span class="status-dot"></span>
+
+                                    Active
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="status-badge status-rejected">
+
+                                    <span class="status-dot"></span>
+
+                                    Inactive
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if user.created_at %}
+
+                                {{ user.created_at.strftime("%Y-%m-%d") }}
+
+                            {% else %}
+
+                                -
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- ==========================================
+                             ACTIONS
+                        =========================================== -->
+
+                        <td>
+
+                            <div class="user-actions">
+
+
+                                <!-- EDIT -->
+
+                                <a
+                                    href="{{ url_for(
+                                        'edit_user',
+                                        id=user.id
+                                    ) }}"
+                                    class="user-action edit"
+                                    title="Edit User"
+                                >
+                                    ✏️
+                                </a>
+
+
+                                <!-- CHANGE PASSWORD -->
+
+                                <a
+                                    href="{{ url_for(
+                                        'change_user_password',
+                                        id=user.id
+                                    ) }}"
+                                    class="user-action password"
+                                    title="Change Password"
+                                >
+                                    🔑
+                                </a>
+
+
+                                <!-- ACTIVATE / DEACTIVATE -->
+
+                                {% if user.id == current_user.id %}
+
+                                    <button
+                                        type="button"
+                                        class="user-action disabled"
+                                        title="You cannot deactivate yourself"
+                                        disabled
+                                    >
+                                        🔒
+                                    </button>
+
+                                {% else %}
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for(
+                                            'toggle_user_status',
+                                            id=user.id
+                                        ) }}"
+                                        style="display:inline;"
+                                    >
+
+                                        {% if user.is_active %}
+
+                                            <button
+                                                type="submit"
+                                                class="user-action deactivate"
+                                                title="Deactivate User"
+                                                onclick="return confirm(
+                                                    'Deactivate {{ user.username }}?'
+                                                );"
+                                            >
+                                                ⏸
+                                            </button>
+
+                                        {% else %}
+
+                                            <button
+                                                type="submit"
+                                                class="user-action activate"
+                                                title="Activate User"
+                                            >
+                                                ▶
+                                            </button>
+
+                                        {% endif %}
+
+                                    </form>
+
+                                {% endif %}
+
+
+                                <!-- DELETE -->
+
+                                {% if user.id == current_user.id %}
+
+                                    <button
+                                        type="button"
+                                        class="user-action disabled"
+                                        title="You cannot delete yourself"
+                                        disabled
+                                    >
+                                        🔒
+                                    </button>
+
+                                {% else %}
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for(
+                                            'delete_user',
+                                            id=user.id
+                                        ) }}"
+                                        style="display:inline;"
+                                    >
+
+                                        <button
+                                            type="submit"
+                                            class="user-action delete"
+                                            title="Delete User"
+                                            onclick="return confirm(
+                                                'WARNING: Delete user {{ user.username }} permanently?'
+                                            );"
+                                        >
+                                            🗑️
+                                        </button>
+
+                                    </form>
+
+                                {% endif %}
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+
+                    {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            style="text-align:center;"
+                        >
+
+                            No users found.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+{% endblock %}
+```

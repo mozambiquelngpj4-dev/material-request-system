@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}
+        Material Request System
+        {% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+<div class="app-shell">
+
+
+    <!-- ==========================================
+         SIDEBAR
+    =========================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-logo">
+                MR
+            </div>
+
+            <div class="brand-text">
+
+                <div class="brand-title">
+                    MATERIAL
+                </div>
+
+                <div class="brand-subtitle">
+                    REQUEST SYSTEM
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="sidebar-section-title">
+            MAIN MENU
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            {% if current_user.is_authenticated %}
+
+                <a
+                    href="{{ url_for('home') }}"
+                    class="nav-item {% if request.endpoint == 'home' %}active{% endif %}"
+                >
+
+                    <span class="nav-icon">
+                        📊
+                    </span>
+
+                    <span>
+                        DASHBOARD
+                    </span>
+
+                </a>
+
+
+                {% if current_user.role not in ["APPROVER_PIPING", "APPROVER_MATERIAL"] %}
+
+    <a 
+        href="{{ url_for('new_material_request') }}" 
+        class="nav-item {% if request.endpoint == 'new_material_request' %}active{% endif %}" 
+    >
+
+        <span class="nav-icon"> 
+            ＋ 
+        </span> 
+
+        <span> 
+            New Request 
+        </span> 
+
+    </a>
+
+{% endif %}
+
+<!-- ==========================================
+     COMPANY MENU
+=========================================== -->
+
+<div class="sidebar-section-title">
+    COMPANY
+</div>
+
+<div class="company-menu">
+
+    <button
+        type="button"
+        class="nav-item company-menu-button"
+        onclick="toggleCompanyMenu()"
+    >
+
+        <span class="nav-icon">
+            🏢
+        </span>
+
+        <span>
+            REQUEST BY COMPANY
+        </span>
+
+        <span
+            class="company-arrow"
+            id="companyArrow"
+        >
+            ▾
+        </span>
+
+    </button>
+
+
+    <!-- COMPANY SUB MENU -->
+
+    <div
+    class="company-submenu"
+    id="companySubmenu"
+>
+
+    <a
+        href="{{ url_for('company_requests', company='WOONGNAM') }}"
+        class="company-submenu-item"
+    >
+        <span class="submenu-dot"></span>
+        WOONGNAM
+    </a>
+
+    <a
+        href="{{ url_for('company_requests', company='DONG-IL') }}"
+        class="company-submenu-item"
+    >
+        <span class="submenu-dot"></span>
+        DONG-IL
+    </a>
+
+    <a
+        href="{{ url_for('company_requests', company='DAEAH') }}"
+        class="company-submenu-item"
+    >
+        <span class="submenu-dot"></span>
+        DAEAH
+    </a>
+
+</div>
+
+</div>
+
+
+                {% if current_user.role == "ADMIN" %}
+
+                    <a
+    href="{{ url_for('users') }}"
+    class="nav-item {% if request.endpoint == 'users' %}active{% endif %}"
+>
+
+    <span class="nav-icon">
+        👤
+    </span>
+
+    <span>
+        USERS
+    </span>
+
+</a>
+
+
+                    <a
+                        href="#"
+                        class="nav-item"
+                    >
+
+                        <span class="nav-icon">
+                            ⚙
+                        </span>
+
+                        <span>
+                            Settings
+                        </span>
+
+                    </a>
+
+                {% endif %}
+
+            {% endif %}
+
+        </nav>
+
+
+        <!-- ==========================================
+             SIDEBAR BOTTOM
+        =========================================== -->
+
+        {% if current_user.is_authenticated %}
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-user">
+
+                <div class="avatar">
+
+                    {{ current_user.full_name[0]|upper }}
+
+                </div>
+
+                <div class="sidebar-user-info">
+
+                    <strong>
+                        {{ current_user.full_name }}
+                    </strong>
+
+                    <span>
+                        {{ current_user.role }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <a
+                href="{{ url_for('logout') }}"
+                class="logout-link"
+            >
+
+                <span>
+                    ↪
+                </span>
+
+                Logout
+
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </aside>
+
+
+    <!-- ==========================================
+         MAIN AREA
+    =========================================== -->
+
+    <main class="main-content">
+
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+    <div class="mobile-brand">
+        Material Request System
+    </div>
+
+    <div class="project-header-title">
+        MOZAMBIQUE LNG PROJECT - DAEWOO E&C
+    </div>
+
+    <div class="topbar-right">
+
+                {% if current_user.is_authenticated %}
+
+                    <a
+    href="{{ url_for('notifications') }}"
+    class="notification"
+    title="Notifications"
+>
+    <span class="notification-bell">
+        🔔
+    </span>
+
+    {% if unread_notifications > 0 %}
+        <span class="notification-count">
+            {{ unread_notifications }}
+        </span>
+    {% endif %}
+</a>
+
+
+                    <div class="topbar-user">
+
+                        <div class="avatar small">
+
+                            {{ current_user.full_name[0]|upper }}
+
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                {{ current_user.full_name }}
+                            </strong>
+
+                            <span>
+                                {{ current_user.role }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </header>
+
+
+        <!-- FLASH MESSAGES -->
+
+        <div class="flash-container">
+
+            {% with messages = get_flashed_messages(
+                with_categories=true
+            ) %}
+
+                {% for category, message in messages %}
+
+                    <div class="flash flash-{{ category }}">
+
+                        {{ message }}
+
+                    </div>
+
+                {% endfor %}
+
+            {% endwith %}
+
+        </div>
+
+
+        <!-- PAGE CONTENT -->
+
+        <section class="content">
+
+            {% block content %}
+
+            {% endblock %}
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <footer class="footer">
+
+            <span>
+                Material Request Management System
+            </span>
+
+            <span>
+                © 2026
+            </span>
+
+        </footer>
+
+    </main>
+
+</div>
+
+
+{% block scripts %}
+
+{% endblock %}
+
+<script>
+
+function toggleCompanyMenu() {
+
+    const submenu =
+        document.getElementById(
+            "companySubmenu"
+        );
+
+    const arrow =
+        document.getElementById(
+            "companyArrow"
+        );
+
+
+    if (!submenu) {
+        return;
+    }
+
+
+    submenu.classList.toggle("show");
+
+
+    if (arrow) {
+
+        arrow.classList.toggle("open");
+
+    }
+
+}
+
+</script>
+
+</body>
+
+</html>

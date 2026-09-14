@@ -1,0 +1,1077 @@
+{% extends "base.html" %}
+
+{% block title %}
+New Material Request | Material Request System
+{% endblock %}
+
+
+{% block content %}
+
+<div class="form-page">
+
+
+    <!-- ==========================================
+         PAGE HEADER
+    =========================================== -->
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <div class="breadcrumb">
+                Material Requests / New
+            </div>
+
+            <h1>
+                New Material Request
+            </h1>
+
+            <p>
+                Create and submit a new material request.
+            </p>
+
+        </div>
+
+    </div>
+
+<!-- FORM -->
+
+<div
+    id="attachmentWarning"
+    class="attachment-warning"
+    style="display: none;"
+>
+    <div class="attachment-warning-icon">
+        ⚠
+    </div>
+
+    <div class="attachment-warning-content">
+        <strong>
+            Attachment Required
+        </strong>
+
+        <span id="attachmentWarningMessage">
+            Please attach the required files.
+        </span>
+    </div>
+
+    <button
+        type="button"
+        onclick="closeAttachmentWarning()"
+        class="attachment-warning-close"
+    >
+        ×
+    </button>
+</div>
+
+<form
+    method="POST"
+    enctype="multipart/form-data"
+    class="material-request-form"
+>
+
+
+
+    <!-- ==========================================
+         FORM
+    =========================================== -->
+
+    <form
+        method="POST"
+        enctype="multipart/form-data"
+        class="material-request-form"
+    >
+
+
+        <!-- ==========================================
+             SECTION 01
+        =========================================== -->
+
+        <div class="form-panel">
+
+            <div class="form-panel-header">
+
+                <div class="form-section-number">
+                    01
+                </div>
+
+                <div>
+
+                    <h2>
+                        Request Information
+                    </h2>
+
+                    <p>
+                        Basic information about the material request.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-grid">
+
+
+                <!-- COMPANY -->
+
+                <div class="form-group">
+
+    <label for="company">
+        Company
+    </label>
+
+    <select
+        name="company"
+        id="company"
+        class="form-control"
+        required
+    >
+
+        <option value="" disabled selected>
+            Select Company
+        </option>
+
+        <option value="DAEAH">
+            DAEAH
+        </option>
+
+        <option value="DONG-IL">
+            DONG-IL
+        </option>
+
+        <option value="WOONGNAM">
+            WOONGNAM
+        </option>
+
+    </select>
+
+</div>
+
+
+
+                <!-- MRI NO -->
+
+                <div class="form-group">
+
+                    <label for="mri_no">
+
+                        MRI Number
+
+                        <span class="required">
+                            *
+                        </span>
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="mri_no"
+                        name="mri_no"
+                        placeholder="e.g. MRI-2026-001"
+                        value="{{ request.form.get('mri_no', '') }}"
+                        required
+                    >
+
+                    <span class="field-help">
+                        Enter a unique Material Request Identification number.
+                    </span>
+
+                </div>
+
+
+
+                <!-- REQUESTED BY -->
+
+                <div class="form-group">
+
+                    <label for="requested_by">
+
+                        Requested By
+
+                        <span class="required">
+                            *
+                        </span>
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="requested_by"
+                        name="requested_by"
+                        placeholder="Enter requester name"
+                        value="{{ request.form.get('requested_by', '') }}"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- REQUEST DATE -->
+
+                <div class="form-group">
+
+                    <label for="req_date">
+
+                        Request Date
+
+                        <span class="required">
+                            *
+                        </span>
+
+                    </label>
+
+                    <input
+                        type="date"
+                        id="req_date"
+                        name="req_date"
+                        value="{{ request.form.get('req_date', '') }}"
+                        required
+                    >
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ==========================================
+             SECTION 02
+             WORKFLOW STATUS
+        =========================================== -->
+
+        <div class="form-panel">
+
+            <div class="form-panel-header">
+
+                <div class="form-section-number">
+                    02
+                </div>
+
+                <div>
+
+                    <h2>
+                        Workflow Status
+                    </h2>
+
+                    <p>
+                        Current approval and processing status.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="workflow-grid">
+
+
+                <!-- ==================================
+                     LTSC
+                =================================== -->
+
+                <div class="workflow-card">
+
+                    <div class="workflow-card-top">
+
+                        <div class="workflow-icon blue">
+                            L
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                LTSC Status
+                            </strong>
+
+                            <span>
+                                Technical review
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <select
+                        name="ltsc_status"
+                        required
+                    >
+
+                        <option
+                            value="Submitted"
+                            {% if request.form.get(
+                                'ltsc_status',
+                                'Submitted'
+                            ) == 'Submitted' %}
+                                selected
+                            {% endif %}
+                        >
+                            Submitted
+                        </option>
+
+                        <option
+                            value="Cancelled"
+                            {% if request.form.get(
+                                'ltsc_status'
+                            ) == 'Cancelled' %}
+                                selected
+                            {% endif %}
+                        >
+                            Cancelled
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- ==================================
+                     ADMIN ONLY:
+                     PIPING
+                =================================== -->
+
+                {% if current_user.role == "ADMIN" %}
+
+                <div class="workflow-card">
+
+                    <div class="workflow-card-top">
+
+                        <div class="workflow-icon purple">
+                            P
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Piping Status
+                            </strong>
+
+                            <span>
+                                Piping review
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <select
+                        name="piping_status"
+                    >
+
+                        <option value="Pending">
+                            Pending
+                        </option>
+
+                        <option value="Approved">
+                            Approved
+                        </option>
+
+                        <option value="Rejected">
+                            Rejected
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- ==================================
+                     ADMIN ONLY:
+                     CCS-JV
+                =================================== -->
+
+                <div class="workflow-card">
+
+                    <div class="workflow-card-top">
+
+                        <div class="workflow-icon orange">
+                            C
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                CCS-JV Confirmation
+                            </strong>
+
+                            <span>
+                                JV confirmation
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <select
+                        name="ccs_jv_confirm"
+                    >
+
+                        <option value="Pending">
+                            Pending
+                        </option>
+
+                        <option value="Confirmed">
+                            Confirmed
+                        </option>
+
+                        <option value="Rejected">
+                            Rejected
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- ==================================
+                     ADMIN ONLY:
+                     MATERIAL
+                =================================== -->
+
+                <div class="workflow-card">
+
+                    <div class="workflow-card-top">
+
+                        <div class="workflow-icon green">
+                            M
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Material Status
+                            </strong>
+
+                            <span>
+                                Material processing
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <select
+                        name="material_status"
+                    >
+
+                        <option value="Pending">
+                            Pending
+                        </option>
+
+                        <option value="Approved">
+                            Approved
+                        </option>
+
+                        <option value="Ordered">
+                            Ordered
+                        </option>
+
+                        <option value="In Transit">
+                            In Transit
+                        </option>
+
+                        <option value="Received">
+                            Received
+                        </option>
+
+                        <option value="Rejected">
+                            Rejected
+                        </option>
+
+                    </select>
+
+                </div>
+
+                {% endif %}
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ==========================================
+             SECTION 03
+             DATES
+             ADMIN ONLY
+        =========================================== -->
+
+        {% if current_user.role == "ADMIN" %}
+
+        <div class="form-panel">
+
+            <div class="form-panel-header">
+
+                <div class="form-section-number">
+                    03
+                </div>
+
+                <div>
+
+                    <h2>
+                        Dates
+                    </h2>
+
+                    <p>
+                        Enter relevant workflow dates when applicable.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-grid">
+
+
+                <!-- PIPING DATE -->
+
+                <div class="form-group">
+
+                    <label for="piping_date">
+                        Piping Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="piping_date"
+                        name="piping_date"
+                        value="{{ request.form.get('piping_date', '') }}"
+                    >
+
+                </div>
+
+
+
+                <!-- MATERIAL DATE -->
+
+                <div class="form-group">
+
+                    <label for="mtrl_date">
+                        Material Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="mtrl_date"
+                        name="mtrl_date"
+                        value="{{ request.form.get('mtrl_date', '') }}"
+                    >
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+
+        <!-- ==========================================
+             SECTION 04
+             DOCUMENTS
+        =========================================== -->
+
+        <div class="form-panel">
+
+            <div class="form-panel-header">
+
+                <div class="form-section-number">
+                    04
+                </div>
+
+                <div>
+
+                    <h2>
+                        Documents
+                    </h2>
+
+                    <p>
+                        Upload supporting documents for this request.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="upload-grid">
+
+
+                <!-- ==================================
+                     EXCEL
+                     REQUESTER + ADMIN
+                =================================== -->
+
+                <div class="upload-box">
+
+                    <div class="upload-icon excel">
+                        XLS
+                    </div>
+
+                    <div class="upload-content">
+
+                        <strong>
+                            Excel Attachment
+                        </strong>
+
+                        <span>
+                            Upload material request Excel file
+                        </span>
+
+                        <label
+                            for="attachment_excel"
+                            class="upload-button"
+                        >
+                            Choose Excel File
+                        </label>
+
+                        <input
+                            type="file"
+                            id="attachment_excel"
+                            name="attachment_excel"
+                            accept=".xls,.xlsx"
+                            onchange="showFileName(
+                                this,
+                                'excel-file-name'
+                            )"
+                        >
+
+                        <small id="excel-file-name">
+                            No file selected
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ==================================
+                     PDF
+                     REQUESTER + ADMIN
+                =================================== -->
+
+                <div class="upload-box">
+
+                    <div class="upload-icon pdf">
+                        PDF
+                    </div>
+
+                    <div class="upload-content">
+
+                        <strong>
+                            PDF Attachment
+                        </strong>
+
+                        <span>
+                            Upload supporting PDF document
+                        </span>
+
+                        <label
+                            for="attachment_pdf"
+                            class="upload-button"
+                        >
+                            Choose PDF File
+                        </label>
+
+                        <input
+                            type="file"
+                            id="attachment_pdf"
+                            name="attachment_pdf"
+                            accept=".pdf"
+                            onchange="showFileName(
+                                this,
+                                'pdf-file-name'
+                            )"
+                        >
+
+                        <small id="pdf-file-name">
+                            No file selected
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ==================================
+                     VOUCHERS
+                     ADMIN ONLY
+                =================================== -->
+
+                {% if current_user.role == "ADMIN" %}
+
+                <div class="upload-box">
+
+                    <div class="upload-icon voucher">
+                        DOC
+                    </div>
+
+                    <div class="upload-content">
+
+                        <strong>
+                            Voucher Files
+                        </strong>
+
+                        <span>
+                            Upload voucher or supporting files
+                        </span>
+
+                        <label
+                            for="voucher_files"
+                            class="upload-button"
+                        >
+                            Choose Files
+                        </label>
+
+                        <input
+                            type="file"
+                            id="voucher_files"
+                            name="voucher_files"
+                            multiple
+                            accept=".pdf"
+                            onchange="showFileName(
+                                this,
+                                'voucher-file-name'
+                            )"
+                        >
+
+                        <small id="voucher-file-name">
+                            No files selected
+                        </small>
+
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ==========================================
+             SECTION 05
+        =========================================== -->
+
+        <div class="form-panel">
+
+            <div class="form-panel-header">
+
+                <div class="form-section-number">
+                    05
+                </div>
+
+                <div>
+
+                    <h2>
+                        Remarks
+                    </h2>
+
+                    <p>
+                        Add any additional information or comments.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="remarks">
+                    Remarks
+                </label>
+
+                <textarea
+                    id="remarks"
+                    name="remarks"
+                    rows="5"
+                    placeholder="Enter any additional information..."
+                >{{ request.form.get('remarks', '') }}</textarea>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ==========================================
+             ACTION BAR
+        =========================================== -->
+
+        <div class="form-actions">
+
+            <a
+                href="{{ url_for('home') }}"
+                class="secondary-button"
+            >
+                Cancel
+            </a>
+
+
+            <button
+                type="submit"
+                class="primary-button"
+            >
+
+                <span>
+                    ✓
+                </span>
+
+                Submit
+
+            </button>
+
+        </div>
+
+
+    </form>
+
+</div>
+
+
+<script>
+
+function showFileName(input, targetId) {
+
+    const target =
+        document.getElementById(targetId);
+
+    if (!input.files || input.files.length === 0) {
+
+        target.textContent =
+            "No file selected";
+
+        return;
+
+    }
+
+
+    if (input.files.length === 1) {
+
+        target.textContent =
+            input.files[0].name;
+
+    } else {
+
+        target.textContent =
+            input.files.length +
+            " files selected";
+
+    }
+
+}
+
+</script>
+
+<script>
+
+function showFileName(input, targetId) {
+
+    const target =
+        document.getElementById(targetId);
+
+    if (!input.files || input.files.length === 0) {
+
+        target.textContent =
+            "No file selected";
+
+        return;
+    }
+
+    if (input.files.length === 1) {
+
+        target.textContent =
+            input.files[0].name;
+
+    } else {
+
+        target.textContent =
+            input.files.length +
+            " files selected";
+    }
+}
+
+
+/* ==========================================
+   ATTACHMENT VALIDATION
+========================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const form =
+            document.querySelector(
+                ".material-request-form"
+            );
+
+        const excelInput =
+            document.getElementById(
+                "attachment_excel"
+            );
+
+        const pdfInput =
+            document.getElementById(
+                "attachment_pdf"
+            );
+
+        if (!form) {
+            return;
+        }
+
+        form.addEventListener(
+            "submit",
+            function (event) {
+
+                const missingFiles = [];
+
+                /* CHECK EXCEL */
+
+                if (
+                    !excelInput ||
+                    !excelInput.files ||
+                    excelInput.files.length === 0
+                ) {
+
+                    missingFiles.push(
+                        "Excel Attachment"
+                    );
+                }
+
+
+                /* CHECK PDF */
+
+                if (
+                    !pdfInput ||
+                    !pdfInput.files ||
+                    pdfInput.files.length === 0
+                ) {
+
+                    missingFiles.push(
+                        "PDF Attachment"
+                    );
+                }
+
+
+                /* IF FILES ARE MISSING */
+
+                if (missingFiles.length > 0) {
+
+                    event.preventDefault();
+
+                    let message = "";
+
+                    if (
+                        missingFiles.length === 2
+                    ) {
+
+                        message =
+                            "Please attach the Excel Attachment and PDF Attachment before submitting.";
+
+                    } else {
+
+                        message =
+                            "Please attach the " +
+                            missingFiles[0] +
+                            " before submitting.";
+                    }
+
+
+                    showAttachmentWarning(
+                        message
+                    );
+
+                    return false;
+                }
+
+            }
+        );
+
+    }
+);
+
+
+/* ==========================================
+   SHOW WARNING
+========================================== */
+
+function showAttachmentWarning(message) {
+
+    const warning =
+        document.getElementById(
+            "attachmentWarning"
+        );
+
+    const warningMessage =
+        document.getElementById(
+            "attachmentWarningMessage"
+        );
+
+    if (!warning) {
+        return;
+    }
+
+    warningMessage.textContent =
+        message;
+
+    warning.style.display =
+        "flex";
+
+
+    /* Automatically hide after 6 seconds */
+
+    setTimeout(
+        function () {
+
+            warning.style.display =
+                "none";
+
+        },
+        6000
+    );
+}
+
+
+/* ==========================================
+   CLOSE WARNING
+========================================== */
+
+function closeAttachmentWarning() {
+
+    const warning =
+        document.getElementById(
+            "attachmentWarning"
+        );
+
+    if (warning) {
+
+        warning.style.display =
+            "none";
+    }
+}
+
+</script>
+
+
+{% endblock %}

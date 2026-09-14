@@ -1,0 +1,854 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+
+
+<div>
+    <h2>Edit Material Request</h2>
+    <p>
+        Update request:
+        <strong>{{ item.mri_no }}</strong>
+    </p>
+</div>
+
+<a
+    href="{{ url_for('view_material_request', id=item.id) }}"
+    class="btn btn-secondary"
+>
+    ← Back
+</a>
+
+
+</div>
+
+<form
+    method="POST"
+    enctype="multipart/form-data"
+    class="request-form"
+>
+
+
+<!-- ==========================================
+     BASIC INFORMATION
+=========================================== -->
+
+<div class="form-section">
+
+    <h3>Basic Information</h3>
+
+    <div class="form-grid">
+
+        <!-- COMPANY -->
+
+        <div class="form-group">
+
+            <label for="company">
+                Company *
+            </label>
+
+            <input
+                type="text"
+                id="company"
+                name="company"
+                value="{{ item.company }}"
+                required
+                {% if current_user.role in ["APPROVER_PIPING", "APPROVER_MATERIAL"] %}
+                    disabled
+                {% endif %}
+            >
+
+            {% if current_user.role in ["APPROVER_PIPING", "APPROVER_MATERIAL"] %}
+                <small>🔒</small>
+            {% endif %}
+
+        </div>
+
+
+        <!-- MRI NO. -->
+
+        <div class="form-group">
+
+            <label for="mri_no">
+                MRI No. *
+            </label>
+
+            <input
+                type="text"
+                id="mri_no"
+                name="mri_no"
+                value="{{ item.mri_no }}"
+                required
+                {% if current_user.role in ["APPROVER_PIPING", "APPROVER_MATERIAL"] %}
+                    disabled
+                {% endif %}
+            >
+
+            {% if current_user.role in ["APPROVER_PIPING", "APPROVER_MATERIAL"] %}
+                <small>🔒</small>
+            {% endif %}
+
+        </div>
+
+
+        <!-- REQUESTED BY -->
+
+        <div class="form-group">
+
+            <label for="requested_by">
+                Requested By *
+            </label>
+
+            <input
+                type="text"
+                id="requested_by"
+                name="requested_by"
+                value="{{ item.requested_by }}"
+                required
+                {% if current_user.role in ["APPROVER_PIPING", "APPROVER_MATERIAL"] %}
+                    disabled
+                {% endif %}
+            >
+
+            {% if current_user.role in ["APPROVER_PIPING", "APPROVER_MATERIAL"] %}
+                <small>🔒</small>
+            {% endif %}
+
+        </div>
+
+
+        <!-- REQUEST DATE -->
+
+        <div class="form-group">
+
+            <label for="req_date">
+                Request Date *
+            </label>
+
+            <input
+                type="date"
+                id="req_date"
+                name="req_date"
+                value="{% if item.req_date %}{{ item.req_date.strftime('%Y-%m-%d') }}{% endif %}"
+                required
+                {% if current_user.role in ["APPROVER_PIPING", "APPROVER_MATERIAL"] %}
+                    disabled
+                {% endif %}
+            >
+
+            {% if current_user.role in ["APPROVER_PIPING", "APPROVER_MATERIAL"] %}
+                <small>🔒</small>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ==========================================
+     STATUS INFORMATION
+=========================================== -->
+
+<div class="form-section">
+
+    <h3>Status Information</h3>
+
+    <div class="form-grid">
+
+
+        <!-- ======================================
+             LTSC STATUS
+        ======================================= -->
+
+        <div class="form-group">
+
+            <label for="ltsc_status">
+                LTSC Status
+            </label>
+
+            <select
+                id="ltsc_status"
+                name="ltsc_status"
+                required
+                {% if current_user.role in ["APPROVER_PIPING", "APPROVER_MATERIAL"] %}
+                    disabled
+                {% endif %}
+            >
+
+                <option
+                    value="Submitted"
+                    {% if item.ltsc_status == "Submitted" %}
+                        selected
+                    {% endif %}
+                >
+                    Submitted
+                </option>
+
+                <option
+                    value="Cancelled"
+                    {% if item.ltsc_status == "Cancelled" %}
+                        selected
+                    {% endif %}
+                >
+                    Cancelled
+                </option>
+
+            </select>
+
+            {% if current_user.role in ["APPROVER_PIPING", "APPROVER_MATERIAL"] %}
+                <small>🔒</small>
+            {% endif %}
+
+        </div>
+
+
+
+        <!-- ======================================
+             PIPING STATUS
+        ======================================= -->
+
+        <div class="form-group">
+
+            <label for="piping_status">
+                Piping Status
+            </label>
+
+            <select
+                id="piping_status"
+                name="piping_status"
+                {% if current_user.role in ["REQUESTER", "APPROVER_MATERIAL"] %}
+                    disabled
+                {% endif %}
+            >
+
+                <option
+                    value="Pending"
+                    {% if item.piping_status == "Pending" %}
+                        selected
+                    {% endif %}
+                >
+                    Pending
+                </option>
+
+                <option
+                    value="In Progress"
+                    {% if item.piping_status == "In Progress" %}
+                        selected
+                    {% endif %}
+                >
+                    In Progress
+                </option>
+
+                <option
+                    value="Completed"
+                    {% if item.piping_status == "Completed" %}
+                        selected
+                    {% endif %}
+                >
+                    Completed
+                </option>
+
+                <option
+                    value="Approved"
+                    {% if item.piping_status == "Approved" %}
+                        selected
+                    {% endif %}
+                >
+                    Approved
+                </option>
+
+                <option
+                    value="Rejected"
+                    {% if item.piping_status == "Rejected" %}
+                        selected
+                    {% endif %}
+                >
+                    Rejected
+                </option>
+
+            </select>
+
+            {% if current_user.role in ["REQUESTER", "APPROVER_MATERIAL"] %}
+                <small>🔒</small>
+            {% endif %}
+
+        </div>
+
+
+
+        <!-- ======================================
+             PIPING DATE
+        ======================================= -->
+
+        <div class="form-group">
+
+            <label for="piping_date">
+                Piping Date
+            </label>
+
+            <input
+                type="date"
+                id="piping_date"
+                name="piping_date"
+                value="{% if item.piping_date %}{{ item.piping_date.strftime('%Y-%m-%d') }}{% endif %}"
+                {% if current_user.role in ["REQUESTER", "APPROVER_MATERIAL"] %}
+                    disabled
+                {% endif %}
+            >
+
+            {% if current_user.role in ["REQUESTER", "APPROVER_MATERIAL"] %}
+                <small>🔒</small>
+            {% endif %}
+
+        </div>
+
+
+
+        <!-- ======================================
+             CCS-JV
+        ======================================= -->
+
+        <div class="form-group">
+
+            <label for="ccs_jv_confirm">
+                CCS-JV Confirmation
+            </label>
+
+            <select
+                id="ccs_jv_confirm"
+                name="ccs_jv_confirm"
+                {% if current_user.role in ["REQUESTER", "APPROVER_MATERIAL"] %}
+                    disabled
+                {% endif %}
+            >
+
+                <option
+                    value="Pending"
+                    {% if item.ccs_jv_confirm == "Pending" %}
+                        selected
+                    {% endif %}
+                >
+                    Pending
+                </option>
+
+                <option
+                    value="Confirmed"
+                    {% if item.ccs_jv_confirm == "Confirmed" %}
+                        selected
+                    {% endif %}
+                >
+                    Confirmed
+                </option>
+
+                <option
+                    value="Rejected"
+                    {% if item.ccs_jv_confirm == "Rejected" %}
+                        selected
+                    {% endif %}
+                >
+                    Rejected
+                </option>
+
+            </select>
+
+            {% if current_user.role in ["REQUESTER", "APPROVER_MATERIAL"] %}
+                <small>🔒</small>
+            {% endif %}
+
+        </div>
+
+
+
+        <!-- ======================================
+             MATERIAL STATUS
+        ======================================= -->
+
+        <div class="form-group">
+
+            <label for="material_status">
+                Material Status
+            </label>
+
+            <select
+                id="material_status"
+                name="material_status"
+                {% if current_user.role in ["REQUESTER", "APPROVER_PIPING"] %}
+                    disabled
+                {% endif %}
+            >
+
+                <option
+                    value="Pending"
+                    {% if item.material_status == "Pending" %}
+                        selected
+                    {% endif %}
+                >
+                    Pending
+                </option>
+
+                <option
+                    value="Approved"
+                    {% if item.material_status == "Approved" %}
+                        selected
+                    {% endif %}
+                >
+                    Approved
+                </option>
+
+                <option
+                    value="Ordered"
+                    {% if item.material_status == "Ordered" %}
+                        selected
+                    {% endif %}
+                >
+                    Ordered
+                </option>
+
+                <option
+                    value="In Transit"
+                    {% if item.material_status == "In Transit" %}
+                        selected
+                    {% endif %}
+                >
+                    In Transit
+                </option>
+
+                <option
+                    value="Received"
+                    {% if item.material_status == "Received" %}
+                        selected
+                    {% endif %}
+                >
+                    Received
+                </option>
+
+                <option
+                    value="Rejected"
+                    {% if item.material_status == "Rejected" %}
+                        selected
+                    {% endif %}
+                >
+                    Rejected
+                </option>
+
+            </select>
+
+            {% if current_user.role in ["REQUESTER", "APPROVER_PIPING"] %}
+                <small>🔒</small>
+            {% endif %}
+
+        </div>
+
+
+
+        <!-- ======================================
+             MATERIAL DATE
+        ======================================= -->
+
+        <div class="form-group">
+
+            <label for="mtrl_date">
+                Material Date
+            </label>
+
+            <input
+                type="date"
+                id="mtrl_date"
+                name="mtrl_date"
+                value="{% if item.mtrl_date %}{{ item.mtrl_date.strftime('%Y-%m-%d') }}{% endif %}"
+                {% if current_user.role in ["REQUESTER", "APPROVER_PIPING"] %}
+                    disabled
+                {% endif %}
+            >
+
+            {% if current_user.role in ["REQUESTER", "APPROVER_PIPING"] %}
+                <small>🔒</small>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ==========================================
+     ATTACHMENTS
+=========================================== -->
+
+<div class="form-section">
+
+    <h3>Attachments</h3>
+
+    <p class="section-description">
+        Existing files are kept unless you select a replacement.
+    </p>
+
+    <div class="edit-upload-grid">
+
+
+        <!-- ======================================
+             EXCEL
+        ======================================= -->
+
+        <div class="edit-upload-card">
+
+            <div class="edit-upload-icon excel">
+                XLS
+            </div>
+
+            <div class="edit-upload-content">
+
+                <label>
+                    Excel Attachment
+                </label>
+
+                {% if item.attachment_excel %}
+
+                    <div class="current-file">
+
+                        <span class="file-status">
+                            ✓
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Current file
+                            </strong>
+
+                            <a
+                                href="{{ url_for(
+                                    'uploaded_file',
+                                    filename=item.attachment_excel
+                                ) }}"
+                                target="_blank"
+                            >
+                                {{ item.attachment_excel }}
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="no-file">
+                        No Excel file attached.
+                    </div>
+
+                {% endif %}
+
+
+                <label
+                    for="attachment_excel"
+                    class="replace-file-button"
+                >
+                    ↻
+                    Replace Excel
+                </label>
+
+                <input
+                    type="file"
+                    id="attachment_excel"
+                    name="attachment_excel"
+                    accept=".xls,.xlsx"
+                    onchange="showSelectedFile(
+                        this,
+                        'excel-selected'
+                    )"
+                >
+
+                <div
+                    id="excel-selected"
+                    class="selected-file"
+                >
+                    No replacement selected
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ======================================
+             PDF
+        ======================================= -->
+
+        <div class="edit-upload-card">
+
+            <div class="edit-upload-icon pdf">
+                PDF
+            </div>
+
+            <div class="edit-upload-content">
+
+                <label>
+                    PDF Attachment
+                </label>
+
+                {% if item.attachment_pdf %}
+
+                    <div class="current-file">
+
+                        <span class="file-status">
+                            ✓
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Current file
+                            </strong>
+
+                            <a
+                                href="{{ url_for(
+                                    'uploaded_file',
+                                    filename=item.attachment_pdf
+                                ) }}"
+                                target="_blank"
+                            >
+                                {{ item.attachment_pdf }}
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="no-file">
+                        No PDF file attached.
+                    </div>
+
+                {% endif %}
+
+
+                <label
+                    for="attachment_pdf"
+                    class="replace-file-button"
+                >
+                    ↻
+                    Replace PDF
+                </label>
+
+                <input
+                    type="file"
+                    id="attachment_pdf"
+                    name="attachment_pdf"
+                    accept=".pdf"
+                    onchange="showSelectedFile(
+                        this,
+                        'pdf-selected'
+                    )"
+                >
+
+                <div
+                    id="pdf-selected"
+                    class="selected-file"
+                >
+                    No replacement selected
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ======================================
+             VOUCHERS
+        ======================================= -->
+
+        <div class="edit-upload-card">
+
+            <div class="edit-upload-icon voucher">
+                DOC
+            </div>
+
+            <div class="edit-upload-content">
+
+                <label>
+                    Voucher Files
+                </label>
+
+                {% if item.voucher_files %}
+
+                    <div class="current-file">
+
+                        <span class="file-status">
+                            ✓
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Current files
+                            </strong>
+
+                            <span>
+                                Voucher files are already attached.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="no-file">
+                        No voucher files attached.
+                    </div>
+
+                {% endif %}
+
+
+                {% if current_user.role in ["ADMIN", "APPROVER_MATERIAL"] %}
+
+                <label
+                    for="voucher_files"
+                    class="replace-file-button"
+                    >
+                    ↻
+                    Replace Vouchers
+                </label>
+
+                    {% else %}
+
+                <div class="replace-file-button disabled">
+                🔒 Voucher replacement disabled
+                </div>
+
+                {% endif %}
+
+                <input
+                    type="file"
+                    id="voucher_files"
+                    name="voucher_files"
+                    multiple
+                    accept=".pdf"
+                    onchange="showSelectedFile(
+                        this,
+                        'voucher-selected'
+                    )"
+                    {% if current_user.role in ["REQUESTER", "APPROVER_PIPING"] %}
+                        disabled
+                    {% endif %}
+                >
+
+                <div
+                    id="voucher-selected"
+                    class="selected-file"
+                >
+                    {% if current_user.role in ["REQUESTER", "APPROVER_PIPING"] %}
+                        
+                    {% else %}
+                        No replacement selected
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ==========================================
+     REMARKS
+=========================================== -->
+
+<div class="form-section">
+
+    <h3>Remarks</h3>
+
+    <div class="form-group">
+
+        <textarea
+            id="remarks"
+            name="remarks"
+            rows="5"
+            placeholder="Enter remarks..."
+        >{{ item.remarks or "" }}</textarea>
+
+    </div>
+
+</div>
+
+
+
+<!-- ==========================================
+     BUTTONS
+=========================================== -->
+
+<div class="form-actions edit-form-actions">
+
+    <a
+        href="{{ url_for(
+            'view_material_request',
+            id=item.id
+        ) }}"
+        class="edit-btn edit-btn-cancel"
+    >
+        <span class="edit-btn-icon">←</span>
+        <span>Cancel</span>
+    </a>
+
+    <button
+        type="submit"
+        class="edit-btn edit-btn-save"
+    >
+        <span class="edit-btn-icon">✓</span>
+        <span>Save Changes</span>
+    </button>
+
+</div>
+
+
+
+
+</form>
+
+<script>
+
+function showSelectedFile(input, targetId) {
+
+    const target =
+        document.getElementById(targetId);
+
+    if (!input.files || input.files.length === 0) {
+
+        target.textContent =
+            "No replacement selected";
+
+        return;
+    }
+
+    if (input.files.length === 1) {
+
+        target.textContent =
+            "New file: " +
+            input.files[0].name;
+
+    } else {
+
+        target.textContent =
+            input.files.length +
+            " new files selected";
+
+    }
+
+}
+
+</script>
+
+{% endblock %}

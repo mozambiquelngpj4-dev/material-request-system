@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Login | Material Request System
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+
+<body class="login-page">
+
+
+<div class="login-layout">
+
+
+    <!-- ==========================================
+         LEFT BRANDING PANEL
+    =========================================== -->
+
+    <div class="login-brand-panel">
+
+        <div class="login-brand-content">
+
+
+            <div class="login-brand-logo">
+            MR
+            </div>
+
+
+            <div class="login-brand-name">
+                Daewoo E&C Material Request
+            </div>
+
+
+            <div class="login-brand-system">
+                MANAGEMENT SYSTEM
+            </div>
+
+
+            <div class="login-divider"></div>
+
+
+            <h1>
+                Mozambique LNG PJ
+                <br>
+                DAEWOO E & C
+                <br>
+                CCS-JV
+            </h1>
+
+
+            
+
+
+            <div class="login-features">
+
+                <div class="login-feature">
+
+                    <span class="feature-icon">
+                        ✓
+                    </span>
+
+                    <span>
+                        Request Management
+                    </span>
+
+                </div>
+
+
+                <div class="login-feature">
+
+                    <span class="feature-icon">
+                        ✓
+                    </span>
+
+                    <span>
+                        Approval Workflow
+                    </span>
+
+                </div>
+
+
+                <div class="login-feature">
+
+                    <span class="feature-icon">
+                        ✓
+                    </span>
+
+                    <span>
+                        Document Tracking
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="login-brand-footer">
+
+            Material Request Management System
+
+            <span>
+                •
+            </span>
+
+            2026
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ==========================================
+         RIGHT LOGIN PANEL
+    =========================================== -->
+
+    <div class="login-form-panel">
+
+
+        <div class="login-form-wrapper">
+
+
+            <div class="mobile-login-logo">
+
+                MR
+
+            </div>
+
+
+            <div class="login-heading">
+
+                <h2>
+                    Welcome back
+                </h2>
+
+                <p>
+                    Sign in to access your dashboard.
+                </p>
+
+            </div>
+
+
+            <!-- FLASH MESSAGES -->
+
+            {% with messages = get_flashed_messages(
+                with_categories=true
+            ) %}
+
+                {% for category, message in messages %}
+
+                    <div
+                        class="login-alert login-alert-{{ category }}"
+                    >
+
+                        {{ message }}
+
+                    </div>
+
+                {% endfor %}
+
+            {% endwith %}
+
+
+            <!-- LOGIN FORM -->
+
+            <form
+                method="POST"
+                class="modern-login-form"
+            >
+
+
+                <!-- USERNAME -->
+
+                <div class="login-form-group">
+
+                    <label for="username">
+
+                        Username
+
+                    </label>
+
+
+                    <div class="login-input-wrapper">
+
+                        <span class="login-input-icon">
+                            👤
+                        </span>
+
+
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Enter your username"
+                            autocomplete="username"
+                            required
+                            autofocus
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PASSWORD -->
+
+                <div class="login-form-group">
+
+                    <div class="password-label-row">
+
+                        <label for="password">
+
+                            Password
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="login-input-wrapper">
+
+                        <span class="login-input-icon">
+                            🔒
+                        </span>
+
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="togglePassword()"
+                            aria-label="Show password"
+                        >
+                            ◉
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- REMEMBER -->
+
+                <div class="login-options">
+
+                    <label class="remember-me">
+
+                        <input
+                            type="checkbox"
+                            name="remember"
+                        >
+
+                        <span>
+                            Remember me
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+
+                <!-- SUBMIT -->
+
+                <button
+                    type="submit"
+                    class="login-submit"
+                >
+
+                    <span>
+                        Sign In
+                    </span>
+
+                    <span class="login-arrow">
+                        →
+                    </span>
+
+                </button>
+
+
+            </form>
+
+
+            <div class="login-security">
+
+                <span>
+                    🔐
+                </span>
+
+                Your connection is protected
+
+            </div>
+
+
+            <div class="login-copyright">
+
+                © 2026 Material Request System
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+function togglePassword() {
+
+    const password =
+        document.getElementById("password");
+
+    const button =
+        document.querySelector(".password-toggle");
+
+
+    if (password.type === "password") {
+
+        password.type = "text";
+
+        button.textContent = "◉";
+
+    } else {
+
+        password.type = "password";
+
+        button.textContent = "◉";
+
+    }
+
+}
+
+</script>
+
+
+</body>
+
+</html>
