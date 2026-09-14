@@ -3617,21 +3617,6 @@ def delete_all_notifications():
     return redirect(url_for("notifications"))
 
 
-@app.route("/init-db")
-def init_db():
-    init_key = request.args.get("key")
-    expected_key = os.environ.get("INIT_DB_KEY")
-
-    if not expected_key or init_key != expected_key:
-        return "Unauthorized", 401
-
-    try:
-        with app.app_context():
-            db.create_all()
-
-        return "DATABASE TABLES CREATED SUCCESSFULLY"
-    except Exception as e:
-        return f"Database initialization failed: {e}", 500
 
 # =========================================================
 # START APPLICATION
