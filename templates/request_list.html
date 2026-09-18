@@ -1,0 +1,579 @@
+{% extends "base.html" %}
+
+{% block title %}
+Request List | Material Request System
+{% endblock %}
+
+{% block content %}
+
+<!-- ==========================================
+     PAGE HEADER
+=========================================== -->
+
+
+<!-- ==========================================
+     REQUESTS PANEL
+=========================================== -->
+
+<div class="panel">
+
+    <!-- PANEL HEADER -->
+
+    <div class="panel-header">
+
+        <div>
+
+            <h2>
+                Material Requests List
+            </h2>
+
+            <p>
+                Latest requests and current status
+            </p>
+
+        </div>
+
+    </div>
+
+<!-- ==========================================
+     ADVANCED SEARCH / FILTER
+=========================================== -->
+
+<div class="search-area">
+
+    <form
+        method="GET"
+        action="{{ url_for('request_list') }}"
+        class="search-form"
+    >
+
+        <!-- GENERAL SEARCH -->
+
+        <div class="search-input">
+
+            <span>
+                🔎
+            </span>
+
+            <input
+                type="text"
+                name="search"
+                value="{{ search }}"
+                placeholder="MRI No., company or requester..."
+            >
+
+        </div>
+
+
+        <!-- COMPANY -->
+
+        <select name="company">
+
+            <option value="">
+                All Companies
+            </option>
+
+            {% for item in companies %}
+
+            <option
+                value="{{ item }}"
+                {% if company == item %}
+                    selected
+                {% endif %}
+            >
+
+                {{ item }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <!-- REQUESTER -->
+
+        <select name="requested_by">
+
+            <option value="">
+                All Requesters
+            </option>
+
+            {% for item in requesters %}
+
+            <option
+                value="{{ item }}"
+                {% if requested_by == item %}
+                    selected
+                {% endif %}
+            >
+
+                {{ item }}
+
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <!-- DATE FROM -->
+
+        <input
+            type="date"
+            name="date_from"
+            value="{{ date_from }}"
+            title="Request date from"
+        >
+
+
+        <!-- DATE TO -->
+
+        <input
+            type="date"
+            name="date_to"
+            value="{{ date_to }}"
+            title="Request date to"
+        >
+
+
+        <!-- LTSC STATUS -->
+
+        <select name="ltsc_status">
+
+            <option value="">
+                All LTSC Status
+            </option>
+
+            <option
+                value="Submitted"
+                {% if ltsc_status == "Submitted" %}
+                    selected
+                {% endif %}
+            >
+                Submitted
+            </option>
+
+            <option
+                value="Approved"
+                {% if ltsc_status == "Approved" %}
+                    selected
+                {% endif %}
+            >
+                Approved
+            </option>
+
+            <option
+                value="Rejected"
+                {% if ltsc_status == "Rejected" %}
+                    selected
+                {% endif %}
+            >
+                Rejected
+            </option>
+
+        </select>
+
+
+        <!-- PIPING STATUS -->
+
+        <select name="piping_status">
+
+            <option value="">
+                All Piping Status
+            </option>
+
+            <option
+                value="Pending"
+                {% if piping_status == "Pending" %}
+                    selected
+                {% endif %}
+            >
+                Pending
+            </option>
+
+            <option
+                value="Approved"
+                {% if piping_status == "Approved" %}
+                    selected
+                {% endif %}
+            >
+                Approved
+            </option>
+
+            <option
+                value="Rejected"
+                {% if piping_status == "Rejected" %}
+                    selected
+                {% endif %}
+            >
+                Rejected
+            </option>
+
+        </select>
+
+
+        <!-- MATERIAL STATUS -->
+
+        <select name="material_status">
+
+            <option value="">
+                All Material Status
+            </option>
+
+            <option
+                value="Pending"
+                {% if material_status == "Pending" %}
+                    selected
+                {% endif %}
+            >
+                Pending
+            </option>
+
+            <option
+                value="Approved"
+                {% if material_status == "Approved" %}
+                    selected
+                {% endif %}
+                >
+                Approved
+            </option>
+
+            <option
+                value="Rejected"
+                {% if material_status == "Rejected" %}
+                    selected
+                {% endif %}
+            >
+                Rejected
+            </option>
+
+        </select>
+
+<!-- ==========================================
+     FILTER ACTION BUTTONS
+=========================================== -->
+
+<div class="filter-actions">
+
+    <!-- APPLY FILTERS -->
+    <button
+        type="submit"
+        class="filter-button"
+    >
+        <span class="button-icon">🔍</span>
+        Apply Filters
+    </button>
+
+
+    <!-- CLEAR FILTERS -->
+    {% if search
+        or company
+        or requested_by
+        or date_from
+        or date_to
+        or ltsc_status
+        or piping_status
+        or material_status
+    %}
+
+    <a
+        href="{{ url_for('request_list') }}"
+        class="clear-filter"
+    >
+        <span class="button-icon">✕</span>
+        Clear Filters
+    </a>
+
+    {% endif %}
+
+
+    <!-- EXPORT EXCEL -->
+    <a
+        href="{{ url_for(
+            'export_excel',
+            search=search,
+            company=company,
+            requested_by=requested_by,
+            date_from=date_from,
+            date_to=date_to,
+            ltsc_status=ltsc_status,
+            piping_status=piping_status,
+            material_status=material_status
+        ) }}"
+        class="export-button"
+    >
+        <span class="button-icon">📊</span>
+        Export Excel
+    </a>
+
+</div>
+
+
+
+    </form>
+
+</div>
+
+
+
+    <!-- ==========================================
+         TABLE
+    =========================================== -->
+
+    <div class="table-wrapper">
+
+        <table class="modern-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        MRI NO.
+                    </th>
+
+                    <th>
+                        COMPANY
+                    </th>
+
+                    <th>
+                        REQUESTED BY
+                    </th>
+
+                    <th>
+                        REQUEST DATE
+                    </th>
+
+                    <th>
+                        LTSC STATUS
+                    </th>
+
+                    <th>
+                        PIPING STATUS
+                    </th>
+
+                    <th>
+                        MATERIAL STATUS
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            {% for item in requests %}
+
+                <tr>
+
+                    <!-- MRI -->
+
+                    <td>
+
+                        <a
+                            href="{{ url_for(
+                                'view_material_request',
+                                id=item.id
+                            ) }}"
+                            class="mri-number"
+                        >
+
+                            {{ item.mri_no }}
+
+                        </a>
+
+                    </td>
+
+
+                    <!-- COMPANY -->
+
+                    <td>
+
+                        <div class="company-cell">
+
+                            <div class="company-avatar">
+
+                                {{ item.company[0]|upper }}
+
+                            </div>
+
+                            <span>
+
+                                {{ item.company }}
+
+                            </span>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- REQUESTER -->
+
+                    <td>
+
+                        <div class="requester">
+
+                            <div class="mini-avatar">
+
+                                {{ item.requested_by[0]|upper }}
+
+                            </div>
+
+                            <span>
+
+                                {{ item.requested_by }}
+
+                            </span>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- DATE -->
+
+                    <td>
+
+                        <span class="date-text">
+
+                            {{ item.req_date.strftime('%d %b %Y') }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- LTSC -->
+
+                    <td>
+
+                        <span
+                            class="status-badge
+                            status-{{ item.ltsc_status|lower|replace(' ', '-') }}"
+                        >
+
+                            <span class="status-dot"></span>
+
+                            {{ item.ltsc_status }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- PIPING -->
+
+                    <td>
+
+                        <span
+                            class="status-badge
+                            status-{{ item.piping_status|lower|replace(' ', '-') }}"
+                        >
+
+                            <span class="status-dot"></span>
+
+                            {{ item.piping_status }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- MATERIAL -->
+
+                    <td>
+
+                        <span
+                            class="status-badge
+                            status-{{ item.material_status|lower|replace(' ', '-') }}"
+                        >
+
+                            <span class="status-dot"></span>
+
+                            {{ item.material_status }}
+
+                        </span>
+
+                    </td>
+
+
+                    
+
+
+            {% else %}
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        class="empty-state"
+                    >
+
+                        <div class="empty-icon">
+                            ▦
+                        </div>
+
+                        <h3>
+                            No requests found
+                        </h3>
+
+                        <p>
+                            There are no material requests matching your search.
+                        </p>
+
+
+                        {% if current_user.role in ["ADMIN", "REQUESTER"] %}
+
+                        <a
+                            href="{{ url_for('new_material_request') }}"
+                            class="primary-button"
+                        >
+                            Create Request
+                        </a>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- ==========================================
+         FOOTER
+    =========================================== -->
+
+    {% if requests %}
+
+    <div class="panel-footer">
+
+        <span>
+
+            Showing
+
+            <strong>
+                {{ requests|length }}
+            </strong>
+
+            request(s)
+
+        </span>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
+

@@ -11,15 +11,21 @@
     >
 
     <title>
-        {% block title %}
-        Material Request System
-        {% endblock %}
-    </title>
+    {% block title %}
+    DAEWOO E&C - Material Request System
+    {% endblock %}
+</title>
 
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='style.css') }}"
-    >
+<link
+    rel="icon"
+    type="image/png"
+    href="{{ url_for('static', filename='1.png') }}"
+>
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='style.css') }}"
+>
 
 </head>
 
@@ -28,77 +34,109 @@
 
 <div class="app-shell">
 
+<!-- ==========================================
+     SIDEBAR
+=========================================== -->
 
-    <!-- ==========================================
-         SIDEBAR
-    =========================================== -->
+<aside class="sidebar">
 
-    <aside class="sidebar">
+    <div class="brand">
 
-        <div class="brand">
+        <div class="brand-logo">
+            MR
+        </div>
 
-            <div class="brand-logo">
-                MR
+        <div class="brand-text">
+
+            <div class="brand-title">
+                MATERIAL
             </div>
 
-            <div class="brand-text">
-
-                <div class="brand-title">
-                    MATERIAL
-                </div>
-
-                <div class="brand-subtitle">
-                    REQUEST SYSTEM
-                </div>
-
+            <div class="brand-subtitle">
+                REQUEST SYSTEM
             </div>
 
         </div>
 
-
-        <div class="sidebar-section-title">
-            MAIN MENU
-        </div>
+    </div>
 
 
-        <nav class="sidebar-nav">
-
-            {% if current_user.is_authenticated %}
-
-                <a
-                    href="{{ url_for('home') }}"
-                    class="nav-item {% if request.endpoint == 'home' %}active{% endif %}"
-                >
-
-                    <span class="nav-icon">
-                        📊
-                    </span>
-
-                    <span>
-                        DASHBOARD
-                    </span>
-
-                </a>
+    <div class="sidebar-section-title">
+        MAIN MENU
+    </div>
 
 
-                {% if current_user.role not in ["APPROVER_PIPING", "APPROVER_MATERIAL"] %}
+    <nav class="sidebar-nav">
 
-    <a 
-        href="{{ url_for('new_material_request') }}" 
-        class="nav-item {% if request.endpoint == 'new_material_request' %}active{% endif %}" 
-    >
 
-        <span class="nav-icon"> 
-            ＋ 
-        </span> 
+        <!-- =====================================
+             DASHBOARD - ADMIN ONLY
+        ====================================== -->
 
-        <span> 
-            New Request 
-        </span> 
+        {% if current_user.role == "ADMIN" %}
 
-    </a>
+        <a
+            href="{{ url_for('home') }}"
+            class="nav-item {% if request.endpoint == 'home' %}active{% endif %}"
+        >
 
-{% endif %}
+            <span class="nav-icon">
+                📊
+            </span>
+
+            <span>
+                DASHBOARD
+            </span>
+
+        </a>
+
+        {% endif %}
+
+
+        <!-- =====================================
+             MATERIAL REQUEST LIST
+             ALL LOGGED-IN USERS
+        ====================================== -->
+
+        <a
+            href="{{ url_for('request_list') }}"
+            class="nav-item {% if request.endpoint == 'request_list' %}active{% endif %}"
+        >
+
+            <span class="nav-icon">
+                📋
+            </span>
+
+            <span>
+                MATERIAL REQUEST LIST
+            </span>
+
+        </a>
+
+
+        <!-- =====================================
+             CREATE NEW REQUEST
+             ADMIN + REQUESTER
+        ====================================== -->
+
+        {% if current_user.role in ["ADMIN", "REQUESTER"] %}
+
+        <a
+            href="{{ url_for('new_material_request') }}"
+            class="nav-item {% if request.endpoint == 'new_material_request' %}active{% endif %}"
+        >
+
+            <span class="nav-icon">
+                ➕
+            </span>
+
+            <span>
+                CREATE NEW REQUEST
+            </span>
+
+        </a>
+
+        {% endif %}
 
 <!-- ==========================================
      COMPANY MENU
@@ -170,45 +208,46 @@
 </div>
 
 
+                <!-- =====================================
+                     ADMIN MENU
+                ====================================== -->
+
                 {% if current_user.role == "ADMIN" %}
 
-                    <a
-    href="{{ url_for('users') }}"
-    class="nav-item {% if request.endpoint == 'users' %}active{% endif %}"
->
+                <a
+                    href="{{ url_for('users') }}"
+                    class="nav-item {% if request.endpoint == 'users' %}active{% endif %}"
+                >
 
-    <span class="nav-icon">
-        👤
-    </span>
+                    <span class="nav-icon">
+                        👤
+                    </span>
 
-    <span>
-        USERS
-    </span>
+                    <span>
+                        USERS
+                    </span>
 
-</a>
+                </a>
 
 
-                    <a
-                        href="#"
-                        class="nav-item"
-                    >
+                <a
+                    href="#"
+                    class="nav-item"
+                >
 
-                        <span class="nav-icon">
-                            ⚙
-                        </span>
+                    <span class="nav-icon">
+                        ⚙
+                    </span>
 
-                        <span>
-                            Settings
-                        </span>
+                    <span>
+                        Settings
+                    </span>
 
-                    </a>
+                </a>
 
                 {% endif %}
 
-            {% endif %}
-
         </nav>
-
 
         <!-- ==========================================
              SIDEBAR BOTTOM

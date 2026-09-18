@@ -5,46 +5,1054 @@
 {% endblock %}
 
 {% block content %}
+<style>
+/* =========================================================
+   COMPANY REQUEST PAGE
+   Clean / Compact / Modern 3D
+========================================================= */
 
-<div class="dashboard-header">
+.company-page {
+    padding: 8px 0 30px;
+    width: 100%;
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.company-hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+
+    padding: 24px 28px;
+    margin-bottom: 20px;
+
+    border-radius: 18px;
+
+    background: linear-gradient(
+        135deg,
+        #ffffff 0%,
+        #f5f8fb 55%,
+        #e9eff5 100%
+    );
+
+    border: 1px solid #e7edf3;
+
+    box-shadow:
+        0 12px 30px rgba(15, 23, 42, .08),
+        inset 0 1px 0 rgba(255, 255, 255, .95);
+}
+
+.company-hero-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+}
+
+.company-hero-icon {
+    width: 62px;
+    height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 17px;
+
+    font-size: 29px;
+
+    background: linear-gradient(
+        145deg,
+        #ffffff,
+        #dfe7ef
+    );
+
+    box-shadow:
+        6px 6px 14px rgba(15, 23, 42, .13),
+        -4px -4px 10px rgba(255, 255, 255, .9);
+}
+
+.company-breadcrumb {
+    margin-bottom: 5px;
+
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .08em;
+
+    color: #64748b;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.company-breadcrumb span {
+    margin: 0 5px;
+    color: #94a3b8;
+}
+
+.company-hero h1 {
+    margin: 0;
+
+    font-size: 27px;
+    line-height: 1.2;
+    font-weight: 800;
+
+    color: #0f172a;
+}
+
+.company-hero p {
+    margin: 5px 0 0;
+
+    color: #64748b;
+    font-size: 13px;
+}
+
+.company-count-card {
+    min-width: 155px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 12px 15px;
+
+    border-radius: 14px;
+
+    background: #ffffff;
+
+    box-shadow:
+        5px 5px 14px rgba(15, 23, 42, .10),
+        -3px -3px 9px rgba(255, 255, 255, .9);
+}
+
+.count-icon {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 11px;
+
+    background: #eef4fa;
+
+    font-size: 19px;
+}
+
+.count-label {
+    display: block;
+
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: .08em;
+
+    color: #64748b;
+}
+
+.company-count-card strong {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 22px;
+
+    color: #0f172a;
+}
+
+/* =========================================================
+   MAIN PANEL
+========================================================= */
+
+.company-panel {
+    overflow: hidden;
+
+    border-radius: 18px;
+
+    background: #ffffff;
+
+    border: 1px solid #e7edf3;
+
+    box-shadow:
+        0 15px 35px rgba(15, 23, 42, .08),
+        0 3px 8px rgba(15, 23, 42, .03);
+}
+
+/* =========================================================
+   PANEL HEADER
+========================================================= */
+
+.company-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 19px 24px;
+
+    border-bottom: 1px solid #edf1f5;
+}
+
+.panel-title-area {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    min-width: 0;
+}
+
+.panel-title-icon {
+    width: 43px;
+    height: 43px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 12px;
+
+    background: linear-gradient(
+        145deg,
+        #ffffff,
+        #e6edf4
+    );
+
+    box-shadow:
+        4px 4px 10px rgba(15, 23, 42, .10),
+        -2px -2px 7px rgba(255, 255, 255, .9);
+
+    font-size: 19px;
+}
+
+.company-panel-header h2 {
+    margin: 0;
+
+    font-size: 18px;
+    line-height: 1.25;
+    font-weight: 800;
+
+    color: #172033;
+}
+
+.company-panel-header p {
+    margin: 4px 0 0;
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+.request-total-badge {
+    padding: 7px 12px;
+
+    border-radius: 999px;
+
+    background: #f1f5f9;
+
+    color: #64748b;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: .07em;
+
+    white-space: nowrap;
+}
+
+.request-total-badge span {
+    color: #0f172a;
+
+    font-size: 14px;
+
+    margin-right: 3px;
+}
+
+/* =========================================================
+   FILTER AREA
+========================================================= */
+
+.company-filter-section {
+    padding: 16px 20px;
+
+    background: linear-gradient(
+        180deg,
+        #fbfcfe,
+        #f7f9fc
+    );
+
+    border-bottom: 1px solid #e9eef4;
+}
+
+.company-filter-form {
+    display: flex;
+    align-items: flex-end;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+.filter-group label {
+    font-size: 9px;
+    font-weight: 800;
+
+    color: #64748b;
+
+    text-transform: uppercase;
+    letter-spacing: .06em;
+}
+
+.search-group {
+    flex: 1;
+    min-width: 260px;
+}
+
+.search-wrapper {
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+
+    left: 12px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    font-size: 13px;
+}
+
+.company-search-input,
+.company-status-select {
+    height: 40px;
+
+    border: 1px solid #dce3eb;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    color: #1e293b;
+
+    outline: none;
+
+    font-size: 12px;
+
+    box-shadow:
+        inset 2px 2px 5px rgba(15, 23, 42, .03),
+        0 2px 6px rgba(15, 23, 42, .03);
+
+    transition: .2s ease;
+}
+
+.company-search-input {
+    width: 100%;
+
+    padding: 0 12px 0 36px;
+}
+
+.company-status-select {
+    min-width: 160px;
+
+    padding: 0 30px 0 11px;
+}
+
+.company-search-input:focus,
+.company-status-select:focus {
+    border-color: #94a3b8;
+
+    box-shadow:
+        0 0 0 3px rgba(100, 116, 139, .08),
+        0 4px 10px rgba(15, 23, 42, .05);
+}
+
+/* =========================================================
+   FILTER BUTTONS
+========================================================= */
+
+.company-action-btn {
+    height: 40px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 0 14px;
+
+    border-radius: 10px;
+
+    border: 0;
+
+    text-decoration: none;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    transition: .2s ease;
+
+    box-shadow:
+        3px 4px 8px rgba(15, 23, 42, .10),
+        -2px -2px 5px rgba(255, 255, 255, .8);
+}
+
+.company-action-btn:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        5px 6px 11px rgba(15, 23, 42, .13),
+        -2px -2px 6px rgba(255, 255, 255, .9);
+}
+
+.company-action-btn:active {
+    transform: translateY(1px);
+}
+
+.filter-btn {
+    background: #172033;
+    color: #ffffff;
+}
+
+.clear-btn {
+    background: #ffffff;
+    color: #475569;
+
+    border: 1px solid #e2e8f0;
+}
+
+.export-btn {
+    background: #eef4f0;
+    color: #315b43;
+
+    border: 1px solid #dce9df;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.company-table-container {
+    width: 100%;
+
+    overflow-x: auto;
+
+    scrollbar-width: thin;
+}
+
+.company-modern-table {
+    width: 100%;
+
+    /*
+       Reduced minimum width so ACTION does not
+       get pushed excessively far to the right.
+    */
+    min-width: 980px;
+
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+/* HEADER */
+
+.company-modern-table thead th {
+    padding: 12px 14px;
+
+    text-align: left;
+
+    background: #f8fafc;
+
+    border-bottom: 1px solid #e5eaf0;
+
+    color: #64748b;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: .06em;
+
+    white-space: nowrap;
+}
+
+/* BODY */
+
+.company-modern-table tbody td {
+    padding: 13px 14px;
+
+    border-bottom: 1px solid #edf1f5;
+
+    color: #334155;
+
+    font-size: 12px;
+
+    vertical-align: middle;
+}
+
+.company-modern-table tbody tr {
+    transition: .18s ease;
+}
+
+.company-modern-table tbody tr:hover {
+    background: #fafcff;
+
+    box-shadow:
+        inset 3px 0 0 #cbd5e1;
+}
+
+.company-modern-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+/* =========================================================
+   COLUMN WIDTHS
+========================================================= */
+
+.company-modern-table th:nth-child(1),
+.company-modern-table td:nth-child(1) {
+    width: 145px;
+}
+
+.company-modern-table th:nth-child(2),
+.company-modern-table td:nth-child(2) {
+    width: 150px;
+}
+
+.company-modern-table th:nth-child(3),
+.company-modern-table td:nth-child(3) {
+    width: 145px;
+}
+
+.company-modern-table th:nth-child(4),
+.company-modern-table td:nth-child(4) {
+    width: 120px;
+}
+
+.company-modern-table th:nth-child(5),
+.company-modern-table td:nth-child(5) {
+    width: 115px;
+}
+
+.company-modern-table th:nth-child(6),
+.company-modern-table td:nth-child(6) {
+    width: 120px;
+}
+
+.company-modern-table th:nth-child(7),
+.company-modern-table td:nth-child(7) {
+    width: 140px;
+}
+
+/* ACTION COLUMN */
+
+.company-modern-table th.action-column,
+.company-modern-table td:last-child {
+    width: 105px;
+
+    text-align: center;
+
+    white-space: nowrap;
+}
+
+/* =========================================================
+   MRI
+========================================================= */
+
+.company-mri {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 7px;
+
+    text-decoration: none;
+
+    color: #1e3a5f;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+.company-mri:hover {
+    text-decoration: underline;
+}
+
+.mri-icon {
+    width: 27px;
+    height: 27px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 8px;
+
+    background: #f1f5f9;
+
+    font-size: 12px;
+}
+
+/* =========================================================
+   COMPANY / REQUESTER
+========================================================= */
+
+.company-cell-modern,
+.requester-modern {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    white-space: nowrap;
+}
+
+.company-avatar-3d,
+.requester-avatar {
+    width: 29px;
+    height: 29px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 9px;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    color: #334155;
+
+    background: linear-gradient(
+        145deg,
+        #ffffff,
+        #e2e8f0
+    );
+
+    box-shadow:
+        2px 3px 6px rgba(15, 23, 42, .10),
+        -2px -2px 4px rgba(255, 255, 255, .9);
+}
+
+.requester-avatar {
+    border-radius: 50%;
+}
+
+.date-modern {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 5px;
+
+    color: #64748b;
+
+    white-space: nowrap;
+}
+
+/* =========================================================
+   STATUS BADGES
+========================================================= */
+
+.status-3d {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    white-space: nowrap;
+
+    box-shadow:
+        inset 0 1px 2px rgba(255, 255, 255, .7),
+        0 2px 4px rgba(15, 23, 42, .05);
+}
+
+.status-3d i {
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    display: inline-block;
+
+    background: currentColor;
+}
+
+.status-approved {
+    color: #166534;
+    background: #ecfdf3;
+}
+
+.status-rejected {
+    color: #b91c1c;
+    background: #fef2f2;
+}
+
+.status-pending,
+.status-submitted {
+    color: #92400e;
+    background: #fffbeb;
+}
+
+.status-progress {
+    color: #1d4ed8;
+    background: #eff6ff;
+}
+
+.status-completed {
+    color: #166534;
+    background: #ecfdf3;
+}
+
+.status-ordered {
+    color: #6d28d9;
+    background: #f5f3ff;
+}
+
+.status-transit {
+    color: #0369a1;
+    background: #f0f9ff;
+}
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+.company-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    white-space: nowrap;
+}
+
+.company-actions form {
+    margin: 0;
+    padding: 0;
+}
+
+.company-icon-btn {
+    width: 30px;
+    height: 30px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 0;
+
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    background: #ffffff;
+
+    box-shadow:
+        2px 3px 6px rgba(15, 23, 42, .10),
+        -2px -2px 4px rgba(255, 255, 255, .9);
+
+    transition: .18s ease;
+}
+
+.company-icon-btn:hover {
+    transform: translateY(-2px);
+}
+
+.view-btn:hover {
+    background: #eff6ff;
+}
+
+.edit-btn:hover {
+    background: #f5f3ff;
+}
+
+.delete-btn:hover {
+    background: #fef2f2;
+}
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.company-empty {
+    text-align: center;
+
+    padding: 65px 20px !important;
+}
+
+.empty-3d-icon {
+    width: 70px;
+    height: 70px;
+
+    margin: 0 auto 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 20px;
+
+    background: linear-gradient(
+        145deg,
+        #ffffff,
+        #e5ebf2
+    );
+
+    box-shadow:
+        7px 7px 16px rgba(15, 23, 42, .11),
+        -4px -4px 10px rgba(255, 255, 255, .9);
+
+    font-size: 27px;
+}
+
+.company-empty h3 {
+    margin: 0;
+
+    color: #1e293b;
+
+    font-size: 17px;
+}
+
+.company-empty p {
+    margin: 6px 0 0;
+
+    color: #94a3b8;
+
+    font-size: 12px;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.company-panel-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 13px 20px;
+
+    border-top: 1px solid #edf1f5;
+
+    background: #fafbfd;
+
+    color: #64748b;
+
+    font-size: 11px;
+}
+
+.company-panel-footer strong {
+    color: #1e293b;
+}
+
+.footer-company-badge {
+    padding: 6px 10px;
+
+    border-radius: 999px;
+
+    background: #ffffff;
+
+    color: #475569;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    box-shadow:
+        2px 3px 6px rgba(15, 23, 42, .07);
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1000px) {
+
+    .company-hero {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .company-hero-right {
+        width: 100%;
+    }
+
+    .company-count-card {
+        width: 100%;
+    }
+}
+
+@media (max-width: 850px) {
+
+    .company-panel-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .request-total-badge {
+        align-self: flex-start;
+    }
+
+    .company-filter-form {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .search-group {
+        min-width: 0;
+    }
+
+    .company-status-select,
+    .company-action-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .company-page {
+        padding-top: 4px;
+    }
+
+    .company-hero {
+        padding: 20px 16px;
+        border-radius: 15px;
+    }
+
+    .company-hero-left {
+        align-items: flex-start;
+    }
+
+    .company-hero-icon {
+        width: 52px;
+        height: 52px;
+
+        font-size: 25px;
+    }
+
+    .company-hero h1 {
+        font-size: 22px;
+    }
+
+    .company-hero p {
+        font-size: 12px;
+    }
+
+    .company-panel-header {
+        padding: 17px 16px;
+    }
+
+    .company-filter-section {
+        padding: 16px;
+    }
+
+    .company-panel-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
 
 
-<div>
+</style>
 
-    <div class="breadcrumb">
-        COMPANY / {{ company }}
-    </div>
+<div class="company-page">
 
-    <h1>
-        {{ company }}
-    </h1>
-
-    <p>
-        All material requests for {{ company }}.
-    </p>
-
-</div>
-
-
-</div>
-
-<div class="panel">
 
 <!-- ==========================================
-     PANEL HEADER
+     HERO HEADER
 =========================================== -->
 
-<div class="panel-header">
+<div class="company-hero">
 
-    <div>
+    <div class="company-hero-left">
 
-        <h2>
-            {{ company }} Material Requests
-        </h2>
+        <div class="company-hero-icon">
+            🏢
+        </div>
 
-        <p>
-            Showing all requests submitted by {{ company }}.
-        </p>
+        <div>
+
+            <div class="company-breadcrumb">
+                MATERIAL REQUEST SYSTEM
+                <span>›</span>
+                COMPANY
+                <span>›</span>
+                {{ company }}
+            </div>
+
+            <h1>
+                {{ company }}
+            </h1>
+
+            <p>
+                All material requests submitted by
+                <strong>{{ company }}</strong>
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="company-hero-right">
+
+        <div class="company-count-card">
+
+            <span class="count-icon">
+                📋
+            </span>
+
+            <div>
+
+                <span class="count-label">
+                    TOTAL REQUESTS
+                </span>
+
+                <strong>
+                    {{ requests|length }}
+                </strong>
+
+            </div>
+
+        </div>
 
     </div>
 
@@ -52,589 +1060,550 @@
 
 
 <!-- ==========================================
-     SEARCH / FILTER / EXPORT
+     MAIN PANEL
 =========================================== -->
 
-<div
-    class="company-filter-bar"
-    style="
-        padding: 15px 20px;
-        border-bottom: 1px solid #e5e7eb;
-    "
->
-
-    <form
-        method="GET"
-        action="{{ url_for(
-            'company_requests',
-            company=company
-        ) }}"
-        style="
-            display: flex;
-            gap: 10px;
-            width: 100%;
-            align-items: center;
-            flex-wrap: wrap;
-        "
-    >
-
-        <!-- SEARCH -->
-
-        <input
-            type="text"
-            name="search"
-            value="{{ search }}"
-            placeholder="Search MRI No. or Requested By..."
-            class="search-input"
-        >
+<div class="company-panel">
 
 
-        <!-- MATERIAL STATUS -->
+    <!-- ==========================================
+         PANEL HEADER
+    =========================================== -->
 
-        <select
-            name="status"
-            class="status-filter"
-        >
+    <div class="company-panel-header">
 
-            <option value="">
-                All Material Status
-            </option>
+        <div class="panel-title-area">
 
-            <option
-                value="Pending"
-                {% if status == "Pending" %}selected{% endif %}
-            >
-                Pending
-            </option>
+            <div class="panel-title-icon">
+                📋
+            </div>
 
-            <option
-                value="Approved"
-                {% if status == "Approved" %}selected{% endif %}
-            >
-                Approved
-            </option>
+            <div>
 
-            <option
-                value="Rejected"
-                {% if status == "Rejected" %}selected{% endif %}
-            >
-                Rejected
-            </option>
+                <h2>
+                    {{ company }} Material Requests
+                </h2>
 
-            <option
-                value="Ordered"
-                {% if status == "Ordered" %}selected{% endif %}
-            >
-                Ordered
-            </option>
+                <p>
+                    View, filter and manage material requests
+                    for this company.
+                </p>
 
-            <option
-                value="In Transit"
-                {% if status == "In Transit" %}selected{% endif %}
-            >
-                In Transit
-            </option>
+            </div>
 
-            <option
-                value="Received"
-                {% if status == "Received" %}selected{% endif %}
-            >
-                Received
-            </option>
-
-        </select>
+        </div>
 
 
-        <!-- FILTER -->
+        <div class="request-total-badge">
 
-        <button
-            type="submit"
-            class="filter-button"
-        >
-            Filter
-        </button>
+            <span>
+                {{ requests|length }}
+            </span>
+
+            REQUESTS
+
+        </div>
+
+    </div>
 
 
-        <!-- CLEAR -->
+    <!-- ==========================================
+         SEARCH / FILTER
+    =========================================== -->
 
-        <a
-            href="{{ url_for(
+    <div class="company-filter-section">
+
+        <form
+            method="GET"
+            action="{{ url_for(
                 'company_requests',
                 company=company
             ) }}"
-            class="filter-button"
-            style="
-                text-decoration: none;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-            "
+            class="company-filter-form"
         >
-            Clear
-        </a>
 
+            <!-- SEARCH -->
 
-        <!-- EXPORT EXCEL -->
+            <div class="filter-group search-group">
 
-        <a
-            href="{{ url_for(
-                'export_company_excel',
-                company=company,
-                search=search,
-                status=status
-            ) }}"
-            class="filter-button"
-            style="
-                text-decoration: none;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-            "
-        >
-            📊 Export Excel
-        </a>
+                <label>
+                    🔎 Search
+                </label>
 
-    </form>
+                <div class="search-wrapper">
 
-</div>
-
-
-<!-- ==========================================
-     TABLE
-=========================================== -->
-
-<div class="table-wrapper">
-
-    <table class="modern-table">
-
-        <thead>
-
-            <tr>
-
-                <th>
-                    MRI NO.
-                </th>
-
-                <th>
-                    COMPANY
-                </th>
-
-                <th>
-                    REQUESTED BY
-                </th>
-
-                <th>
-                    REQUEST DATE
-                </th>
-
-                <th>
-                    LTSC
-                </th>
-
-                <th>
-                    PIPING
-                </th>
-
-                <th>
-                    MATERIAL STATUS
-                </th>
-
-                <th>
-                    ACTION
-                </th>
-
-            </tr>
-
-        </thead>
-
-
-        <tbody>
-
-            {% for item in requests %}
-
-            <tr>
-
-                <!-- ==================================
-                     MRI
-                =================================== -->
-
-                <td>
-
-                    <a
-                        href="{{ url_for(
-                            'view_material_request',
-                            id=item.id
-                        ) }}"
-                        class="mri-number"
-                    >
-                        {{ item.mri_no }}
-                    </a>
-
-                </td>
-
-
-                <!-- ==================================
-                     COMPANY
-                =================================== -->
-
-                <td>
-
-                    <div class="company-cell">
-
-                        <div class="company-avatar">
-
-                            {{ item.company[0]|upper }}
-
-                        </div>
-
-                        {{ item.company }}
-
-                    </div>
-
-                </td>
-
-
-                <!-- ==================================
-                     REQUESTED BY
-                =================================== -->
-
-                <td>
-
-                    <div class="requester">
-
-                        <div class="mini-avatar">
-
-                            {{ item.requested_by[0]|upper }}
-
-                        </div>
-
-                        {{ item.requested_by }}
-
-                    </div>
-
-                </td>
-
-
-                <!-- ==================================
-                     REQUEST DATE
-                =================================== -->
-
-                <td>
-
-                    <span class="date-text">
-
-                        {{ item.req_date.strftime('%Y-%m-%d') }}
-
+                    <span class="search-icon">
+                        🔍
                     </span>
 
-                </td>
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ search }}"
+                        placeholder="Search MRI No. or Requested By..."
+                        class="company-search-input"
+                    >
 
+                </div>
 
-                <!-- ==================================
-                     LTSC
-                =================================== -->
+            </div>
 
-                <td>
 
-                    {% if item.ltsc_status == "Submitted" %}
+            <!-- STATUS -->
 
-                        <span class="status-badge status-submitted">
+            <div class="filter-group">
 
-                            <span class="status-dot"></span>
+                <label>
+                    📊 Material Status
+                </label>
 
-                            Submitted
+                <select
+                    name="status"
+                    class="company-status-select"
+                >
 
-                        </span>
+                    <option value="">
+                        All Material Status
+                    </option>
 
-                    {% elif item.ltsc_status == "Cancelled" %}
+                    <option
+                        value="Pending"
+                        {% if status == "Pending" %}selected{% endif %}
+                    >
+                        Pending
+                    </option>
 
-                        <span class="status-badge status-rejected">
+                    <option
+                        value="Approved"
+                        {% if status == "Approved" %}selected{% endif %}
+                    >
+                        Approved
+                    </option>
 
-                            <span class="status-dot"></span>
+                    <option
+                        value="Rejected"
+                        {% if status == "Rejected" %}selected{% endif %}
+                    >
+                        Rejected
+                    </option>
 
-                            Cancelled
+                    <option
+                        value="Ordered"
+                        {% if status == "Ordered" %}selected{% endif %}
+                    >
+                        Ordered
+                    </option>
 
-                        </span>
+                    <option
+                        value="In Transit"
+                        {% if status == "In Transit" %}selected{% endif %}
+                    >
+                        In Transit
+                    </option>
 
-                    {% else %}
+                    <option
+                        value="Received"
+                        {% if status == "Received" %}selected{% endif %}
+                    >
+                        Received
+                    </option>
 
-                        <span class="status-badge status-pending">
+                </select>
 
-                            <span class="status-dot"></span>
+            </div>
 
-                            {{ item.ltsc_status }}
 
-                        </span>
+            <!-- FILTER -->
 
-                    {% endif %}
+            <button
+                type="submit"
+                class="company-action-btn filter-btn"
+            >
 
-                </td>
+                
 
+                Filter
 
-                <!-- ==================================
-                     PIPING
-                =================================== -->
+            </button>
 
-                <td>
 
-                    {% if item.piping_status == "Approved" %}
+            <!-- CLEAR -->
 
-                        <span class="status-badge status-approved">
+            <a
+                href="{{ url_for(
+                    'company_requests',
+                    company=company
+                ) }}"
+                class="company-action-btn clear-btn"
+            >
 
-                            <span class="status-dot"></span>
+                <span>
+                    ↻
+                </span>
 
-                            Approved
+                Clear
 
-                        </span>
+            </a>
 
-                    {% elif item.piping_status == "Rejected" %}
 
-                        <span class="status-badge status-rejected">
+            <!-- EXPORT -->
 
-                            <span class="status-dot"></span>
+            <a
+                href="{{ url_for(
+                    'export_company_excel',
+                    company=company,
+                    search=search,
+                    status=status
+                ) }}"
+                class="company-action-btn export-btn"
+            >
 
-                            Rejected
+                <span>
+                    📊
+                </span>
 
-                        </span>
+                Export Excel
 
-                    {% elif item.piping_status == "In Progress" %}
+            </a>
 
-                        <span class="status-badge status-in-progress">
+        </form>
 
-                            <span class="status-dot"></span>
+    </div>
 
-                            In Progress
 
-                        </span>
+    <!-- ==========================================
+         TABLE
+    =========================================== -->
 
-                    {% elif item.piping_status == "Completed" %}
+    <div class="company-table-container">
 
-                        <span class="status-badge status-completed">
+        <table class="company-modern-table">
 
-                            <span class="status-dot"></span>
+            <thead>
 
-                            Completed
+                <tr>
 
-                        </span>
+                    <th>
+                        MRI NO.
+                    </th>
 
-                    {% else %}
+                    <th>
+                        COMPANY
+                    </th>
 
-                        <span class="status-badge status-pending">
+                    <th>
+                        REQUESTED BY
+                    </th>
 
-                            <span class="status-dot"></span>
+                    <th>
+                        REQUEST DATE
+                    </th>
 
-                            {{ item.piping_status }}
+                    <th>
+                        LTSC
+                    </th>
 
-                        </span>
+                    <th>
+                        PIPING
+                    </th>
 
-                    {% endif %}
+                    <th>
+                        MATERIAL STATUS
+                    </th>
 
-                </td>
+                </tr>
 
+            </thead>
 
-                <!-- ==================================
-                     MATERIAL STATUS
-                =================================== -->
 
-                <td>
+            <tbody>
 
-                    {% if item.material_status == "Approved" %}
+                {% for item in requests %}
 
-                        <span class="status-badge status-approved">
+                <tr>
 
-                            <span class="status-dot"></span>
+                    <!-- MRI -->
 
-                            Approved
-
-                        </span>
-
-                    {% elif item.material_status == "Rejected" %}
-
-                        <span class="status-badge status-rejected">
-
-                            <span class="status-dot"></span>
-
-                            Rejected
-
-                        </span>
-
-                    {% elif item.material_status == "Ordered" %}
-
-                        <span class="status-badge status-ordered">
-
-                            <span class="status-dot"></span>
-
-                            Ordered
-
-                        </span>
-
-                    {% elif item.material_status == "In Transit" %}
-
-                        <span class="status-badge status-in-transit">
-
-                            <span class="status-dot"></span>
-
-                            In Transit
-
-                        </span>
-
-                    {% elif item.material_status == "Received" %}
-
-                        <span class="status-badge status-completed">
-
-                            <span class="status-dot"></span>
-
-                            Received
-
-                        </span>
-
-                    {% else %}
-
-                        <span class="status-badge status-pending">
-
-                            <span class="status-dot"></span>
-
-                            {{ item.material_status }}
-
-                        </span>
-
-                    {% endif %}
-
-                </td>
-
-
-                <!-- ==================================
-                     ACTION
-                =================================== -->
-
-                <td>
-
-                    <div class="action-menu">
-
-                        <!-- VIEW -->
+                    <td>
 
                         <a
                             href="{{ url_for(
                                 'view_material_request',
                                 id=item.id
                             ) }}"
-                            class="icon-button"
-                            title="View"
+                            class="company-mri"
                         >
-                            👁
+
+                            <span class="mri-icon">
+                                📄
+                            </span>
+
+                            {{ item.mri_no }}
+
                         </a>
 
-
-                        <!-- EDIT -->
-
-                        <a
-                            href="{{ url_for(
-                                'edit_material_request',
-                                id=item.id
-                            ) }}"
-                            class="icon-button"
-                            title="Edit"
-                        >
-                            ✎
-                        </a>
+                    </td>
 
 
-                        <!-- DELETE -->
+                    <!-- COMPANY -->
 
-                        {% if current_user.role == "ADMIN" %}
+                    <td>
 
-                        <form
-                            method="POST"
-                            action="{{ url_for(
-                                'delete_material_request',
-                                id=item.id
-                            ) }}"
-                            style="display:inline;"
-                            onsubmit="return confirm(
-                                'Are you sure you want to delete this request?'
-                            );"
-                        >
+                        <div class="company-cell-modern">
 
-                            <button
-                                type="submit"
-                                class="delete-button"
-                                title="Delete"
-                            >
-                                🗑
-                            </button>
+                            <div class="company-avatar-3d">
+                                {{ item.company[0]|upper }}
+                            </div>
 
-                        </form>
+                            <span>
+                                {{ item.company }}
+                            </span>
 
-                        {% endif %}
+                        </div>
 
-                    </div>
-
-                </td>
-
-            </tr>
+                    </td>
 
 
-            {% else %}
+                    <!-- REQUESTER -->
 
-            <!-- ==================================
-                 EMPTY
-            =================================== -->
+                    <td>
 
-            <tr>
+                        <div class="requester-modern">
 
-                <td
-                    colspan="8"
-                    class="empty-state"
-                >
+                            <div class="requester-avatar">
+                                {{ item.requested_by[0]|upper }}
+                            </div>
 
-                    <div class="empty-icon">
-                        📋
-                    </div>
+                            <span>
+                                {{ item.requested_by }}
+                            </span>
 
-                    <h3>
-                        No Material Requests
-                    </h3>
+                        </div>
 
-                    <p>
+                    </td>
 
-                        {% if search or status %}
 
-                            No requests match your
-                            current filter.
+                    <!-- DATE -->
+
+                    <td>
+
+                        <span class="date-modern">
+
+                            📅
+
+                            {{ item.req_date.strftime('%Y-%m-%d') }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- LTSC -->
+
+                    <td>
+
+                        {% if item.ltsc_status == "Submitted" %}
+
+                            <span class="status-3d status-submitted">
+                                <i></i>
+                                Submitted
+                            </span>
+
+                        {% elif item.ltsc_status == "Cancelled" %}
+
+                            <span class="status-3d status-rejected">
+                                <i></i>
+                                Cancelled
+                            </span>
 
                         {% else %}
 
-                            There are currently no requests
-                            for {{ company }}.
+                            <span class="status-3d status-pending">
+                                <i></i>
+                                {{ item.ltsc_status }}
+                            </span>
 
                         {% endif %}
 
-                    </p>
-
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
-
-</div>
+                    </td>
 
 
-<!-- ==========================================
-     FOOTER
-=========================================== -->
+                    <!-- PIPING -->
 
-<div class="panel-footer">
+                    <td>
 
-    Total {{ company }} Requests:
+                        {% if item.piping_status == "Approved" %}
 
-    <strong>
-        {{ requests|length }}
-    </strong>
+                            <span class="status-3d status-approved">
+                                <i></i>
+                                Approved
+                            </span>
+
+                        {% elif item.piping_status == "Rejected" %}
+
+                            <span class="status-3d status-rejected">
+                                <i></i>
+                                Rejected
+                            </span>
+
+                        {% elif item.piping_status == "In Progress" %}
+
+                            <span class="status-3d status-progress">
+                                <i></i>
+                                In Progress
+                            </span>
+
+                        {% elif item.piping_status == "Completed" %}
+
+                            <span class="status-3d status-completed">
+                                <i></i>
+                                Completed
+                            </span>
+
+                        {% else %}
+
+                            <span class="status-3d status-pending">
+                                <i></i>
+                                {{ item.piping_status }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- MATERIAL -->
+
+                    <td>
+
+                        {% if item.material_status == "Approved" %}
+
+                            <span class="status-3d status-approved">
+                                <i></i>
+                                Approved
+                            </span>
+
+                        {% elif item.material_status == "Rejected" %}
+
+                            <span class="status-3d status-rejected">
+                                <i></i>
+                                Rejected
+                            </span>
+
+                        {% elif item.material_status == "Ordered" %}
+
+                            <span class="status-3d status-ordered">
+                                <i></i>
+                                Ordered
+                            </span>
+
+                        {% elif item.material_status == "In Transit" %}
+
+                            <span class="status-3d status-transit">
+                                <i></i>
+                                In Transit
+                            </span>
+
+                        {% elif item.material_status == "Received" %}
+
+                            <span class="status-3d status-completed">
+                                <i></i>
+                                Received
+                            </span>
+
+                        {% else %}
+
+                            <span class="status-3d status-pending">
+                                <i></i>
+                                {{ item.material_status }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+
+                </tr>
+
+
+                {% else %}
+
+                <!-- EMPTY -->
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        class="company-empty"
+                    >
+
+                        <div class="empty-3d-icon">
+                            📋
+                        </div>
+
+                        <h3>
+                            No Material Requests
+                        </h3>
+
+                        <p>
+
+                            {% if search or status %}
+
+                                No requests match your
+                                current filter.
+
+                            {% else %}
+
+                                There are currently no requests
+                                for {{ company }}.
+
+                            {% endif %}
+
+                        </p>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- ==========================================
+         FOOTER
+    =========================================== -->
+
+    <div class="company-panel-footer">
+
+        <div>
+
+            Showing
+
+            <strong>
+                {{ requests|length }}
+            </strong>
+
+            request{% if requests|length != 1 %}s{% endif %}
+
+            for
+
+            <strong>
+                {{ company }}
+            </strong>
+
+        </div>
+
+        <div class="footer-company-badge">
+            🏢 {{ company }}
+        </div>
+
+    </div>
 
 </div>
 

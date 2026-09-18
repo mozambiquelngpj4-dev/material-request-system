@@ -290,8 +290,14 @@ def login():
 
             login_user(user)
 
+            if current_user.role == "ADMIN":
+
+                return redirect(
+                    url_for("home")
+                )
+
             return redirect(
-                url_for("home")
+                url_for("request_list")
             )
 
         flash(
@@ -322,8 +328,8 @@ def logout():
     return redirect(
         url_for("login")
     )
-
-
+    
+    
 # =========================================================
 # DASHBOARD
 # =========================================================
@@ -332,56 +338,20 @@ def logout():
 @login_required
 def home():
 
-    search = request.args.get(
-        "search",
-        ""
-    ).strip()
-
-    status = request.args.get(
-        "status",
-        ""
-    ).strip()
-
-    query = MaterialRequest.query
-
     # -----------------------------------------------------
-    # SEARCH
+    # ONLY ADMIN CAN ACCESS DASHBOARD
     # -----------------------------------------------------
 
-    if search:
+    if current_user.role != "ADMIN":
 
-        search_filter = (
-            MaterialRequest.mri_no.ilike(
-                f"%{search}%"
-            )
-            |
-            MaterialRequest.company.ilike(
-                f"%{search}%"
-            )
-            |
-            MaterialRequest.requested_by.ilike(
-                f"%{search}%"
-            )
+        flash(
+            "Access denied. Admin privileges required.",
+            "danger"
         )
 
-        query = query.filter(
-            search_filter
+        return redirect(
+            url_for("request_list")
         )
-
-    # -----------------------------------------------------
-    # STATUS FILTER
-    # -----------------------------------------------------
-
-    if status:
-
-        query = query.filter(
-            MaterialRequest.material_status
-            == status
-        )
-
-    requests = query.order_by(
-        MaterialRequest.id.desc()
-    ).all()
 
     # -----------------------------------------------------
     # DASHBOARD COUNTS
@@ -423,9 +393,6 @@ def home():
 
     return render_template(
         "index.html",
-        requests=requests,
-        search=search,
-        status=status,
         total=total,
         piping_approved=piping_approved,
         piping_rejected=piping_rejected,
@@ -434,25 +401,71 @@ def home():
     )
 
 
+
+
 # =========================================================
 # EXPORT MATERIAL REQUESTS TO EXCEL
 # =========================================================
 
+
 @app.route("/export/excel")
 @login_required
 def export_excel():
+
+    # -----------------------------------------------------
+    # GET FILTER VALUES
+    # -----------------------------------------------------
 
     search = request.args.get(
         "search",
         ""
     ).strip()
 
-    status = request.args.get(
-        "status",
+    company = request.args.get(
+        "company",
         ""
     ).strip()
 
+    requested_by = request.args.get(
+        "requested_by",
+        ""
+    ).strip()
+
+    date_from = request.args.get(
+        "date_from",
+        ""
+    ).strip()
+
+    date_to = request.args.get(
+        "date_to",
+        ""
+    ).strip()
+
+    ltsc_status = request.args.get(
+        "ltsc_status",
+        ""
+    ).strip()
+
+    piping_status = request.args.get(
+        "piping_status",
+        ""
+    ).strip()
+
+    material_status = request.args.get(
+        "material_status",
+        ""
+    ).strip()
+
+    # -----------------------------------------------------
+    # BASE QUERY
+    # -----------------------------------------------------
+
     query = MaterialRequest.query
+
+    # -----------------------------------------------------
+    # GENERAL SEARCH
+    # MRI / COMPANY / REQUESTER
+    # -----------------------------------------------------
 
     if search:
 
@@ -474,12 +487,104 @@ def export_excel():
             search_filter
         )
 
-    if status:
+    # -----------------------------------------------------
+    # COMPANY
+    # -----------------------------------------------------
+
+    if company:
+
+        query = query.filter(
+            MaterialRequest.company == company
+        )
+
+    # -----------------------------------------------------
+    # REQUESTER
+    # -----------------------------------------------------
+
+    if requested_by:
+
+        query = query.filter(
+            MaterialRequest.requested_by == requested_by
+        )
+
+    # -----------------------------------------------------
+    # DATE FROM
+    # -----------------------------------------------------
+
+    if date_from:
+
+        try:
+
+            date_from_obj = datetime.strptime(
+                date_from,
+                "%Y-%m-%d"
+            ).date()
+
+            query = query.filter(
+                MaterialRequest.req_date >= date_from_obj
+            )
+
+        except ValueError:
+
+            pass
+
+    # -----------------------------------------------------
+    # DATE TO
+    # -----------------------------------------------------
+
+    if date_to:
+
+        try:
+
+            date_to_obj = datetime.strptime(
+                date_to,
+                "%Y-%m-%d"
+            ).date()
+
+            query = query.filter(
+                MaterialRequest.req_date <= date_to_obj
+            )
+
+        except ValueError:
+
+            pass
+
+    # -----------------------------------------------------
+    # LTSC STATUS
+    # -----------------------------------------------------
+
+    if ltsc_status:
+
+        query = query.filter(
+            MaterialRequest.ltsc_status
+            == ltsc_status
+        )
+
+    # -----------------------------------------------------
+    # PIPING STATUS
+    # -----------------------------------------------------
+
+    if piping_status:
+
+        query = query.filter(
+            MaterialRequest.piping_status
+            == piping_status
+        )
+
+    # -----------------------------------------------------
+    # MATERIAL STATUS
+    # -----------------------------------------------------
+
+    if material_status:
 
         query = query.filter(
             MaterialRequest.material_status
-            == status
+            == material_status
         )
+
+    # -----------------------------------------------------
+    # FINAL RESULTS
+    # -----------------------------------------------------
 
     requests = query.order_by(
         MaterialRequest.id.desc()
@@ -523,7 +628,7 @@ def export_excel():
     )
 
     # -----------------------------------------------------
-    # FILTERS
+    # FILTER SUMMARY
     # -----------------------------------------------------
 
     worksheet["A4"] = "Search:"
@@ -531,12 +636,39 @@ def export_excel():
         search if search else "All"
     )
 
-    worksheet["C4"] = (
-        "Material Status:"
+    worksheet["C4"] = "Company:"
+    worksheet["D4"] = (
+        company if company else "All"
     )
 
-    worksheet["D4"] = (
-        status if status else "All"
+    worksheet["E4"] = "Requester:"
+    worksheet["F4"] = (
+        requested_by if requested_by else "All"
+    )
+
+    worksheet["G4"] = "Date From:"
+    worksheet["H4"] = (
+        date_from if date_from else "All"
+    )
+
+    worksheet["I4"] = "Date To:"
+    worksheet["J4"] = (
+        date_to if date_to else "All"
+    )
+
+    worksheet["K4"] = "LTSC:"
+    worksheet["L4"] = (
+        ltsc_status if ltsc_status else "All"
+    )
+
+    worksheet["M4"] = "Piping:"
+    worksheet["N4"] = (
+        piping_status if piping_status else "All"
+    )
+
+    worksheet["O4"] = "Material:"
+    worksheet["P4"] = (
+        material_status if material_status else "All"
     )
 
     # -----------------------------------------------------
@@ -739,7 +871,8 @@ def export_excel():
     output.seek(0)
 
     filename = (
-        "Material_Request_Report_"
+        f"{company if company else 'All'}"
+        "_Material_Request_Report_"
         f"{datetime.now().strftime('%Y-%m-%d')}.xlsx"
     )
 
@@ -1995,7 +2128,7 @@ def edit_material_request(id):
             db.session.rollback()
 
             flash(
-                "Status cannot be change",
+                "Status cannot be change.Already Approved by Piping/Material Dept.",
                 "danger"
             )
 
@@ -3619,6 +3752,253 @@ def delete_all_notifications():
 
 
 # =========================================================
+# REQUEST LIST
+# =========================================================
+
+@app.route("/requests")
+@login_required
+def request_list():
+
+    # -----------------------------------------------------
+    # GET FILTER VALUES
+    # -----------------------------------------------------
+
+    search = request.args.get(
+        "search",
+        ""
+    ).strip()
+
+    company = request.args.get(
+        "company",
+        ""
+    ).strip()
+
+    requested_by = request.args.get(
+        "requested_by",
+        ""
+    ).strip()
+
+    date_from = request.args.get(
+        "date_from",
+        ""
+    ).strip()
+
+    date_to = request.args.get(
+        "date_to",
+        ""
+    ).strip()
+
+    ltsc_status = request.args.get(
+        "ltsc_status",
+        ""
+    ).strip()
+
+    piping_status = request.args.get(
+        "piping_status",
+        ""
+    ).strip()
+
+    material_status = request.args.get(
+        "material_status",
+        ""
+    ).strip()
+
+    # -----------------------------------------------------
+    # BASE QUERY
+    # -----------------------------------------------------
+
+    query = MaterialRequest.query
+
+    # -----------------------------------------------------
+    # GENERAL SEARCH
+    # MRI / COMPANY / REQUESTER
+    # -----------------------------------------------------
+
+    if search:
+
+        search_filter = (
+            MaterialRequest.mri_no.ilike(
+                f"%{search}%"
+            )
+            |
+            MaterialRequest.company.ilike(
+                f"%{search}%"
+            )
+            |
+            MaterialRequest.requested_by.ilike(
+                f"%{search}%"
+            )
+        )
+
+        query = query.filter(
+            search_filter
+        )
+
+    # -----------------------------------------------------
+    # COMPANY
+    # -----------------------------------------------------
+
+    if company:
+
+        query = query.filter(
+            MaterialRequest.company == company
+        )
+
+    # -----------------------------------------------------
+    # REQUESTER
+    # -----------------------------------------------------
+
+    if requested_by:
+
+        query = query.filter(
+            MaterialRequest.requested_by == requested_by
+        )
+
+    # -----------------------------------------------------
+    # REQUEST DATE - FROM
+    # -----------------------------------------------------
+
+    if date_from:
+
+        try:
+
+            from datetime import datetime
+
+            date_from_obj = datetime.strptime(
+                date_from,
+                "%Y-%m-%d"
+            ).date()
+
+            query = query.filter(
+                MaterialRequest.req_date >= date_from_obj
+            )
+
+        except ValueError:
+            pass
+
+    # -----------------------------------------------------
+    # REQUEST DATE - TO
+    # -----------------------------------------------------
+
+    if date_to:
+
+        try:
+
+            from datetime import datetime
+
+            date_to_obj = datetime.strptime(
+                date_to,
+                "%Y-%m-%d"
+            ).date()
+
+            query = query.filter(
+                MaterialRequest.req_date <= date_to_obj
+            )
+
+        except ValueError:
+            pass
+
+    # -----------------------------------------------------
+    # LTSC STATUS
+    # -----------------------------------------------------
+
+    if ltsc_status:
+
+        query = query.filter(
+            MaterialRequest.ltsc_status
+            == ltsc_status
+        )
+
+    # -----------------------------------------------------
+    # PIPING STATUS
+    # -----------------------------------------------------
+
+    if piping_status:
+
+        query = query.filter(
+            MaterialRequest.piping_status
+            == piping_status
+        )
+
+    # -----------------------------------------------------
+    # MATERIAL STATUS
+    # -----------------------------------------------------
+
+    if material_status:
+
+        query = query.filter(
+            MaterialRequest.material_status
+            == material_status
+        )
+
+    # -----------------------------------------------------
+    # FINAL RESULTS
+    # -----------------------------------------------------
+
+    requests = query.order_by(
+        MaterialRequest.id.desc()
+    ).all()
+
+    # -----------------------------------------------------
+    # FILTER OPTIONS
+    # -----------------------------------------------------
+
+    companies = [
+        row[0]
+        for row in db.session.query(
+            MaterialRequest.company
+        )
+        .filter(
+            MaterialRequest.company.isnot(None)
+        )
+        .distinct()
+        .order_by(
+            MaterialRequest.company
+        )
+        .all()
+    ]
+
+    requesters = [
+        row[0]
+        for row in db.session.query(
+            MaterialRequest.requested_by
+        )
+        .filter(
+            MaterialRequest.requested_by.isnot(None)
+        )
+        .distinct()
+        .order_by(
+            MaterialRequest.requested_by
+        )
+        .all()
+    ]
+
+    # -----------------------------------------------------
+    # RENDER
+    # -----------------------------------------------------
+
+    return render_template(
+        "request_list.html",
+
+        requests=requests,
+
+        search=search,
+        company=company,
+        requested_by=requested_by,
+
+        date_from=date_from,
+        date_to=date_to,
+
+        ltsc_status=ltsc_status,
+        piping_status=piping_status,
+        material_status=material_status,
+
+        companies=companies,
+        requesters=requesters
+    )
+
+
+# =========================================================
 # START APPLICATION
 # =========================================================
 
@@ -3629,7 +4009,8 @@ if __name__ == "__main__":
         db.create_all()
 
     app.run(
-        debug=True,
-        host="127.0.0.1",
-        port=5000
+        debug=False,
+        host="0.0.0.0",
+        port=8080
+        
     )
